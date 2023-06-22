@@ -148,3 +148,4 @@ dist-ssr
 .yarn/install-state.gz
 .pnp.*	
 *.7z			   
+.vite/
