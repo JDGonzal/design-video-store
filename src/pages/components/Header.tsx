@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import { RiShoppingCartLine, RiHeart2Line } from "react-icons/ri";
+import { darkBrown, midOrange } from "./colors";
 
 function Header() {
-  const darkBrown='bg-[#181A20]';
-  const orangeColor = 'text-[#E58D27] transition-colors';
+  const orangeColor = 'text-'+midOrange+' transition-colors';
   const hoverColor = "hover:"+orangeColor;
   return (
-    <header className={"text-gray-400 py-4 px-10 flex items-center justify-between "+darkBrown}>
+    <header className={"h-[10vh] text-gray-400 py-4 px-10 flex items-center justify-between bg-"+darkBrown}>
       {/* Menu */}
       <ul className="flex items-center gap-6">
         <li>
@@ -14,6 +14,9 @@ function Header() {
         </li>
         <li>
           <Link to="/" className={hoverColor}>Streams</Link>
+        </li>
+        <li>
+          <Link to="/" className={orangeColor}>Game Store</Link>
         </li>
         <li>
           <Link to="/" className={hoverColor}>News</Link>

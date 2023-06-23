@@ -189,3 +189,79 @@ const orangeColor = 'text-[#E58D27] transition-colors';
 <ul className="flex items-center gap-6 text-xl">
 ```
 27. Add the same `className` to the each `<button>`.
+
+## 2. Sidebar or Left hand navigation Menu
+1. Add two component into '/pages/components' called "Sidebar.tsx" and "Content.tsx" files.
+2. run the `rafce`, delete the first line, and update the "index.ts" file.
+3. Add in "Home.tsx" file the components `<Sidebar/>`, and `<Content/>` below the `Header` into a `<div>`:
+```javascript
+    <div className="min-h-screen">
+      <Header />
+      <div className="h-[90vh] p-8">
+      <Sidebar/>
+      <Content/>
+      </div>
+    </div>
+```
+4. Need to add the 10% missing in "Header.tsx" file in the `<header` element:
+```javascript
+ <header className={"h-[10vh] text-gray-400 py-4 px-10 flex items-center justify-between "+darkBrown}>
+``` 
+5. Add a `className` into the `<div>` of "Sidebar.tsx" file:
+```javascript
+<div className="w-64 h-full overflow-y-scroll">
+```
+6. Add a `className` into the `<div>` of "Content.tsx" file, to expand the rest to the right:
+```javascript
+<div className=" flex-1 h-full overflow-y-scroll">
+```
+7. Add two `<div>` into "Sidebar.tsx" file.
+8. Add in the first `<div>` element, a `<h4>`, and more elements to show checkbox:
+```javascript
+      <div className={"bg-" + brownColor + " rounded-xl p-4"}>
+        <h4>Categories</h4>
+        <div className="flex items-center gap-4">
+          <input type="checkbox" id="indy" />
+          <label htmlFor="indy">Indy</label>
+        </div>
+      </div>
+```
+9. Repeat the `<div>` of each check box 7 times more to complete this list: Indy, Adventure, MMO, Casual Game, Strategy, Simulator, Sports Game, Action Game.  
+10. Below the `<h4>` add `<div>` arround all `<input` checkbox type.
+11. Add to this `<div>` a `className`:
+```javascript
+<div className="flex flex-col gap-2">
+``` 
+12. Add another `<h4>` with Paltforms
+```javascript
+<h4 className="my-6">Platforms</h4>
+```
+13. Repeat the `<div>` of each check box  times more to complete this list: PC, PlayStation 5, PlasyStation 4, Xbox Series, Nintendo Switch.
+14. Copy another `<h4>` for Price:
+```javascript
+<h4 className="my-6">Price</h4>
+```
+15. Add a `<form>` to include the `<input>` element with only numbers:
+```javascript
+        <form action="submint">
+          <div>
+            <input type="number" className={"bg-"+darkBrown+" py-2 px-4 rounded-xl"}/>
+            </div>
+        </form>
+```
+16. Add a Dolar symbol as an icon and put into the   `<input>`:
+```javascript
+          <div className="relative">
+            <RiMoneyDollarCircleLine className="absolute left-2 top-1/2 -translate-y-1/2 text-xl" />
+            <input
+              type="number"
+              className={
+                "bg-" + darkBrown + " py-2 pl-8 pr-4 rounded-xl w-full"
+              }
+            />
+          </div>
+```
+17. Add an `<span>`, and duplicate the `<input type="number"`
+18. Add a `className` to the `<form>`:
+```javascript
+```
