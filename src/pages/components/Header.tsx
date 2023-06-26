@@ -1,37 +1,35 @@
 import { Link } from "react-router-dom";
 import { RiShoppingCartLine, RiHeart2Line } from "react-icons/ri";
-import { darkBrown, midOrange } from "./colors";
 
 function Header() {
-  const orangeColor = 'text-'+midOrange+' transition-colors';
-  const hoverColor = "hover:"+orangeColor;
+
   return (
-    <header className={"h-[10vh] text-gray-400 py-4 px-10 flex items-center justify-between bg-"+darkBrown}>
+    <header className="h-[10vh] text-gray-400 py-4 px-10 flex items-center justify-between bg-[#181A20]">
       {/* Menu */}
       <ul className="flex items-center gap-6">
         <li>
-          <Link to="/" className={hoverColor}>Home</Link>
+          <Link to="/" className="hover:text-[#E58D27] transition-colors">Home</Link>
         </li>
         <li>
-          <Link to="/" className={hoverColor}>Streams</Link>
+          <Link to="/" className="hover:text-[#E58D27] transition-colors">Streams</Link>
         </li>
         <li>
-          <Link to="/" className={orangeColor}>Game Store</Link>
+          <Link to="/" className="text-[#E58D27]">Game Store</Link>
         </li>
         <li>
-          <Link to="/" className={hoverColor}>News</Link>
+          <Link to="/" className="hover:text-[#E58D27] transition-colors">News</Link>
         </li>
       </ul>
       {/* User menu */}
       <ul className="flex items-center gap-6 text-xl">
         <li>
-          <button className={hoverColor}><RiShoppingCartLine/></button>
+          <button className="hover:text-[#E58D27] transition-colors"><RiShoppingCartLine/></button>
         </li>
         <li>
-          <button className={hoverColor}><RiHeart2Line/></button>
+          <button className="hover:text-[#E58D27] transition-colors"><RiHeart2Line/></button>
         </li>
         <li>
-          <button><img src="/src/assets/avatar194938.png" className="w-8 h-8 object-cover rounded-full"/></button>
+          <button><img src="/src/assets/avatar194938.png" className="w-8 h-8 object-cover rounded-full hover:ring-2"/></button>
         </li>
       </ul>
     </header>
