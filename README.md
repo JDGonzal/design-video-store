@@ -190,7 +190,7 @@ const orangeColor = 'text-[#E58D27] transition-colors';
 ```
 27. Add the same `className` to the each `<button>`.
 
-## 2. Sidebar or Left hand navigation Menu
+## 2a. Sidebar or Left hand navigation Menu
 1. Add two component into '/pages/components' called "Sidebar.tsx" and "Content.tsx" files.
 2. run the `rafce`, delete the first line, and update the "index.ts" file.
 3. Add in "Home.tsx" file the components `<Sidebar/>`, and `<Content/>` below the `Header` into a `<div>`:
@@ -265,3 +265,50 @@ const orangeColor = 'text-[#E58D27] transition-colors';
 18. Add a `className` to the `<form>`:
 ```javascript
 ```
+## 2b. Side bar the Filter button and Social Media
+1. When start the app,  the colors don't appear then remove the `import` from "colors.ts" file , and put manually the colors to each element.
+2. Add a `<button>` just over the `</form>` in "Sidebar.tsx" file, with a `type="submit"`:
+```javascript
+        <button type="submit"> </button>
+```
+3. Put a `<div>` arround the both `<div className="relative">`, and add a `className`, movirn form the `<form>`:
+```javascript
+        <form>
+          <div className="flex items-center justify-between gap-2">
+            <div className="relative">
+              ...
+            </div>
+            <span>-</span>
+            <div className="relative">
+             ...
+            </div>
+          </div>
+          <button type="submit">Apply Filters</button>
+        </form>
+```
+4. Add to the `<form>` a new `className`:
+```javascript
+        <form className="flex flex-col gap-6">
+```
+5. Add a `className` to the `<button>`:
+```javascript
+<button type="submit" className="bg-[#E58D27] text-black rounded-full w-full p-2">Apply Filters</button>
+```
+6. Add to the three `<h4>` in `className`:
+```javascript
+      <h4 className="my-6 text-white text-lg">
+```
+7. Add a `hover:` to the `<button>`, into the `className`:
+```javascript
+hover:-translate-y-1 transition-all duration-200
+```
+8. Adding the Social Media:
+```javascript
+<ul className="flex items-center justify-between">
+  <li><a href="https://www.twitter.com" target="_blank" className="text-2xl"><RiTwitterLine/></a> </li>
+  <li><a href="https://www.instagram.com" target="_blank" className="text-2xl"> <RiInstagramLine/></a> </li>
+  <li><a href="https://www.youtube.com" target="_blank" className="text-2xl"><RiYoutubeLine/> </a> </li>
+  <li><a href="https://www.facebook.com" target="_blank" className="text-2xl"><RiFacebookLine/> </a> </li>
+</ul>
+```
+
