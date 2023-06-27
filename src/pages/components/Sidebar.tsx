@@ -9,58 +9,58 @@ function Sidebar() {
         <h4 className="mb-5 text-white text-lg">Categories</h4>
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
-            <input type="checkbox" id="indy" />
+            <input type="checkbox" id="indy" className="accent-[#E58D27]"/>
             <label htmlFor="indy">Indy</label>
           </div>
           <div className="flex items-center gap-2">
-            <input type="checkbox" id="adventure" />
+            <input type="checkbox" id="adventure" className="accent-[#E58D27]"/>
             <label htmlFor="adventure">Adventure</label>
           </div>
           <div className="flex items-center gap-2">
-            <input type="checkbox" id="mmo" />
+            <input type="checkbox" id="mmo" className="accent-[#E58D27]"/>
             <label htmlFor="mmo">MMO</label>
           </div>
           <div className="flex items-center gap-2">
-            <input type="checkbox" id="casualGame" />
+            <input type="checkbox" id="casualGame" className="accent-[#E58D27]"/>
             <label htmlFor="casualGame">Casual Game</label>
           </div>
           <div className="flex items-center gap-2">
-            <input type="checkbox" id="strategy" />
+            <input type="checkbox" id="strategy" className="accent-[#E58D27]"/>
             <label htmlFor="strategy">Strategy</label>
           </div>
           <div className="flex items-center gap-2">
-            <input type="checkbox" id="simulator" />
+            <input type="checkbox" id="simulator" className="accent-[#E58D27]"/>
             <label htmlFor="simulator">Simulator</label>
           </div>
           <div className="flex items-center gap-2">
-            <input type="checkbox" id="sportsGame" />
+            <input type="checkbox" id="sportsGame" className="accent-[#E58D27]"/>
             <label htmlFor="sportsGame">Sports Game</label>
           </div>
           <div className="flex items-center gap-2">
-            <input type="checkbox" id="actionGame" />
+            <input type="checkbox" id="actionGame" className="accent-[#E58D27]"/>
             <label htmlFor="actionGame">Action Game</label>
           </div>
         </div>
         <h4 className="my-5 text-white text-lg">Platforms</h4>
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
-            <input type="checkbox" id="pc" />
+            <input type="checkbox" id="pc" className="accent-[#E58D27]"/>
             <label htmlFor="pc">PC</label>
           </div>
           <div className="flex items-center gap-2">
-            <input type="checkbox" id="playStation5" />
+            <input type="checkbox" id="playStation5" className="accent-[#E58D27]"/>
             <label htmlFor="playStation5">PlayStation 5</label>
           </div>
           <div className="flex items-center gap-2">
-            <input type="checkbox" id="playStation4" />
+            <input type="checkbox" id="playStation4" className="accent-[#E58D27]"/>
             <label htmlFor="playStation4">PlasyStation 4</label>
           </div>
           <div className="flex items-center gap-2">
-            <input type="checkbox" id="xBoxSeries" />
+            <input type="checkbox" id="xBoxSeries" className="accent-[#E58D27]"/>
             <label htmlFor="xBoxSeries">Xbox Series</label>
           </div>
           <div className="flex items-center gap-2">
-            <input type="checkbox" id="nintentoSwitch" />
+            <input type="checkbox" id="nintentoSwitch" className="accent-[#E58D27]"/>
             <label htmlFor="nintentoSwitch">Nintendo Switch</label>
           </div>
         </div>

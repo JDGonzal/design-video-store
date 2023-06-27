@@ -1,27 +1,49 @@
+import { Card } from ".";
+
 function Content() {
   return (
-    <div className=" flex-1 h-full overflow-y-scroll bg-slate-200">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Interdum varius sit amet mattis. Cursus risus at ultrices mi. Tempus iaculis urna id volutpat lacus. Scelerisque fermentum dui faucibus in ornare. Porttitor leo a diam sollicitudin tempor. Amet consectetur adipiscing elit pellentesque habitant morbi. Ultrices tincidunt arcu non sodales neque sodales. Dignissim enim sit amet venenatis urna cursus. Mauris in aliquam sem fringilla ut. Augue eget arcu dictum varius duis at. Tristique magna sit amet purus gravida quis blandit turpis cursus. Tortor vitae purus faucibus ornare. Tellus id interdum velit laoreet id donec. Ut placerat orci nulla pellentesque dignissim enim sit amet. Eu volutpat odio facilisis mauris sit amet massa vitae. Et pharetra pharetra massa massa ultricies mi quis hendrerit dolor.
+    <div className=" flex-1 h-full overflow-y-scroll ">
+      <div className="rounded-2xl mb-4">
+        <img
+          src="https://as01.epimg.net/meristation/imagenes/2021/08/31/noticias/1630415976_693445_1630416052_portada_normal.jpg"
+          className="w-full h-[500px] object-cover object-top rounded-2xl"
+        />
+      </div>
+      <div className="flex items-center justify-between flex-wrap gap-8">
+        <Card
+          img="https://image.api.playstation.com/vulcan/img/rnd/202011/0714/vuF88yWPSnDfmFJVTyNJpVwW.png"
+          title="Marvel's Spider-Man"
+          category="PS5"
+          price="51"
+        />
+        <Card
+          img="https://m.media-amazon.com/images/I/91OWgMrKsQL.jpg"
+          title="Little Nightmares II"
+          category="PS4"
+          price="40"
+        />
+        <Card
+          img="https://image.api.playstation.com/vulcan/ap/rnd/202010/0222/niMUubpU9y1PxNvYmDfb8QFD.png"
+          title="Ghost of Tsushima"
+          category="PS4"
+          price="48"
+        />
+        <Card
+          img="https://media.vandal.net/m/82925/call-of-duty-warzone-20203102215835_1.jpg"
+          title="Call of Duty: Warzone"
+          category="PS4"
+          price="60"
+        />
+        <Card
+          img="https://image.api.playstation.com/vulcan/img/rnd/202111/0822/zDXM9K2cQiq0vKTDwF0TkAor.png"
+          title="Fifa 22"
+          category="Xbox Series X"
+          price="120"
+        />
 
-In hac habitasse platea dictumst vestibulum rhoncus est pellentesque. Imperdiet proin fermentum leo vel orci porta non pulvinar. Pellentesque pulvinar pellentesque habitant morbi tristique senectus et. Ipsum nunc aliquet bibendum enim facilisis gravida. Auctor eu augue ut lectus arcu bibendum. Blandit libero volutpat sed cras ornare arcu dui vivamus arcu. Ultrices mi tempus imperdiet nulla malesuada pellentesque. Faucibus vitae aliquet nec ullamcorper sit amet risus. Viverra ipsum nunc aliquet bibendum enim facilisis gravida neque convallis. Consequat ac felis donec et odio. Odio ut enim blandit volutpat. Tristique senectus et netus et malesuada fames ac turpis egestas.
-
-A lacus vestibulum sed arcu non odio. Mattis aliquam faucibus purus in massa tempor nec feugiat. Vitae justo eget magna fermentum iaculis eu non diam. Quis hendrerit dolor magna eget est lorem ipsum dolor. Tincidunt praesent semper feugiat nibh sed pulvinar. Orci phasellus egestas tellus rutrum tellus pellentesque eu tincidunt. Nec tincidunt praesent semper feugiat nibh sed pulvinar proin. Massa tincidunt nunc pulvinar sapien. Lacinia quis vel eros donec ac. Porttitor massa id neque aliquam vestibulum morbi blandit cursus risus. Et ultrices neque ornare aenean euismod elementum nisi quis eleifend. Vitae turpis massa sed elementum tempus. Ut enim blandit volutpat maecenas volutpat blandit aliquam etiam. Sed viverra tellus in hac habitasse platea dictumst. Sapien eget mi proin sed libero enim sed faucibus turpis. Turpis massa tincidunt dui ut ornare. Leo duis ut diam quam.
-
-Libero volutpat sed cras ornare arcu. In est ante in nibh mauris cursus mattis molestie. Auctor neque vitae tempus quam pellentesque. Sodales ut eu sem integer vitae justo eget magna. Pretium lectus quam id leo in vitae turpis. Rhoncus est pellentesque elit ullamcorper. Arcu ac tortor dignissim convallis aenean et tortor at. Penatibus et magnis dis parturient montes. Auctor augue mauris augue neque gravida. Venenatis tellus in metus vulputate. Et leo duis ut diam quam nulla porttitor. Varius duis at consectetur lorem donec massa.
-
-Auctor neque vitae tempus quam. Donec massa sapien faucibus et molestie ac feugiat sed. Id eu nisl nunc mi ipsum faucibus vitae aliquet. In tellus integer feugiat scelerisque. Leo in vitae turpis massa. In tellus integer feugiat scelerisque varius. Quis lectus nulla at volutpat diam ut venenatis tellus in. Malesuada fames ac turpis egestas maecenas pharetra. Vitae congue mauris rhoncus aenean vel elit scelerisque mauris. Auctor augue mauris augue neque gravida. Quis blandit turpis cursus in hac habitasse platea. Est placerat in egestas erat. Nisl nunc mi ipsum faucibus vitae aliquet. Imperdiet nulla malesuada pellentesque elit. Proin nibh nisl condimentum id venenatis. Aliquet enim tortor at auctor urna. Viverra aliquet eget sit amet tellus cras adipiscing. Interdum varius sit amet mattis vulputate enim nulla aliquet porttitor. Tincidunt id aliquet risus feugiat in ante metus dictum. Semper risus in hendrerit gravida rutrum quisque non tellus orci.
-
-Sed libero enim sed faucibus. Magna fermentum iaculis eu non diam phasellus vestibulum lorem sed. Lorem dolor sed viverra ipsum nunc. Volutpat commodo sed egestas egestas fringilla. Nam libero justo laoreet sit amet cursus sit amet dictum. Tortor posuere ac ut consequat semper viverra nam. Felis eget velit aliquet sagittis id. Bibendum est ultricies integer quis auctor elit sed vulputate mi. Venenatis cras sed felis eget velit aliquet. Libero volutpat sed cras ornare arcu dui. Eget nunc scelerisque viverra mauris in aliquam sem. Mi tempus imperdiet nulla malesuada pellentesque elit eget. Porttitor eget dolor morbi non.
-
-Nec ultrices dui sapien eget mi proin sed libero enim. Ultrices dui sapien eget mi proin sed libero enim. Nisi scelerisque eu ultrices vitae auctor eu augue ut. Quam viverra orci sagittis eu volutpat. Duis ut diam quam nulla porttitor. Morbi non arcu risus quis varius quam. Massa tempor nec feugiat nisl pretium fusce id velit ut. Leo duis ut diam quam nulla. Ultrices vitae auctor eu augue ut lectus arcu bibendum. Vitae proin sagittis nisl rhoncus mattis rhoncus.
-
-Praesent tristique magna sit amet purus gravida. Venenatis a condimentum vitae sapien pellentesque. Pellentesque dignissim enim sit amet venenatis urna cursus eget nunc. Mi proin sed libero enim sed faucibus. Pellentesque eu tincidunt tortor aliquam nulla facilisi cras. Tortor at auctor urna nunc id cursus metus aliquam eleifend. Pulvinar pellentesque habitant morbi tristique senectus et netus et. Lobortis feugiat vivamus at augue eget. In nisl nisi scelerisque eu ultrices vitae. Mi in nulla posuere sollicitudin aliquam.
-
-Urna condimentum mattis pellentesque id nibh tortor id aliquet lectus. Augue mauris augue neque gravida in fermentum et sollicitudin ac. Donec pretium vulputate sapien nec sagittis. Viverra tellus in hac habitasse. Pharetra et ultrices neque ornare aenean euismod. Sed viverra tellus in hac habitasse platea dictumst vestibulum. Bibendum at varius vel pharetra vel turpis nunc eget lorem. Facilisis mauris sit amet massa vitae tortor condimentum lacinia quis. Suscipit adipiscing bibendum est ultricies integer. Sed nisi lacus sed viverra. Lobortis elementum nibh tellus molestie nunc non blandit massa enim. Egestas sed sed risus pretium quam vulputate dignissim suspendisse. Tincidunt nunc pulvinar sapien et. Ut tortor pretium viverra suspendisse potenti. Donec ultrices tincidunt arcu non. Turpis cursus in hac habitasse platea dictumst. Blandit libero volutpat sed cras ornare arcu dui vivamus arcu.
-
-Odio aenean sed adipiscing diam donec adipiscing tristique risus nec. Sagittis eu volutpat odio facilisis mauris sit amet massa. Interdum consectetur libero id faucibus nisl. Proin sagittis nisl rhoncus mattis rhoncus. Augue interdum velit euismod in pellentesque massa. Cras semper auctor neque vitae tempus. Ultrices sagittis orci a scelerisque purus semper eget duis. Morbi tristique senectus et netus et malesuada. Sit amet porttitor eget dolor morbi. Mattis ullamcorper velit sed ullamcorper. Turpis egestas maecenas pharetra convallis.
+      </div>
     </div>
-  )
+  );
 }
 
-export default Content
+export default Content;
