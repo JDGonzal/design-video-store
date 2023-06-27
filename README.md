@@ -311,4 +311,47 @@ hover:-translate-y-1 transition-all duration-200
   <li><a href="https://www.facebook.com" target="_blank" className="text-2xl"><RiFacebookLine/> </a> </li>
 </ul>
 ```
-
+#3. Complete the Content or Right side.
+1. Add a `className` to check box:
+```javascript
+className="accent-[#E58D27]"
+```
+2. Add a Picture `<img>` into "content.tsx" file.
+3. Add a "Card.tsx" file.
+```javascript
+const Card = (props:{ img:string, title:string, category:string, price:string }) => {
+  return (
+    <div className="bg-[#362C29]/50 p-6 rounded-2xl flex flex-col gap-2">
+      {" "}
+      <img
+        src={props.img}
+        className="w-52 h-52 object-cover rounded-2x1"
+      />
+      <h1 className="text-xl text-white">{props.title}</h1>
+      <span className="text-gray-400">{props.category}</span>
+      <div className="flex items-center gap-4">
+        <h5 className="text-3xl text-[#E58D27]">${props.price}</h5>
+        <button
+          className="bg-[#E58D27] text-black font-bold rounded-full w-full p-3 hover:-translate-y-1 transition-all
+duration-200"
+        >
+          Buy
+        </button>
+      </div>
+    </div>
+  );
+};
+```
+4. Call this car into "content.tsx" file:
+```javascript
+        <Card
+          img="https://image.api.playstation.com/vulcan/img/rnd/202011/0714/vuF88yWPSnDfmFJVTyNJpVwW.png"
+          title="Marvel's Spider-Man"
+          category="PS5"
+          price="51"
+        />
+```
+5. All the `<Card` ar into a `<div>` with `className`, and the very important there is `flex-wrap`: 
+```javascript
+    <div className="flex items-center justify-between flex-wrap gap-8">
+```
