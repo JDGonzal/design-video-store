@@ -393,3 +393,30 @@ const [showMenu, setShowMenu ] = useState(false);
 <ul className=" w-full mt-20">
 ```
 8. For the Menu add some elements to `className`, as `block text-center p-4 text-4xl`.
+
+## 4b. Responsive the Sidebar
+1. Put some elements in the `className` of first `<div>` in "Sidebar.tsx" file, to hide when is mobile, and only shows in PC:
+```javascript
+<div className="w-[80%] fixed lg:static top-0 -left-full lg:w-80 h-full overflow-y-scroll text-gray-400 bg-[#181A20] transition-all duration-200 p-3">
+```
+2. Add a `<>` element and move all inside this element
+3. Add a `<button>` with `RiFilterLine` icon:
+```javascript
+      <button className="text-lg fixed bottom-4 right-4 bg-[#E58D27] rounded-full z-40 lg:hidden"><RiFilterLine/></button>
+```
+4. Add an `useState` to show the Filter:
+```javascript
+const [showSidebar, setShowSidebar] = useState(false);
+```
+5. Use the condition in the first `<div>`:
+```javascript
+<div className={`w-[80%] fixed lg:static top-0 ${showSidebar?"left-0":"-left-full"} lg:w-80 h-full overflow-y-scroll text-gray-400 bg-[#181A20] transition-all duration-200 p-3`}>
+```
+6. the last `<button>` add a condition to show the `RiCloseLine` or `RiFilterLine` :
+```javascript
+{showSidebar? <RiCloseLine/>:<RiFilterLine/>}
+```
+7. for the 'IPad Air' device add `className` of first `<div>`the use of `md`:
+```javascript
+      `... md:w-[40%] ...`
+```
