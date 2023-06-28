@@ -311,7 +311,7 @@ hover:-translate-y-1 transition-all duration-200
   <li><a href="https://www.facebook.com" target="_blank" className="text-2xl"><RiFacebookLine/> </a> </li>
 </ul>
 ```
-#3. Complete the Content or Right side.
+## 3. Complete the Content or Right side.
 1. Add a `className` to check box:
 ```javascript
 className="accent-[#E58D27]"
@@ -355,3 +355,41 @@ duration-200"
 ```javascript
     <div className="flex items-center justify-between flex-wrap gap-8">
 ```
+
+## 4a. Responsive the First Top-Menu or Header
+1. Add a `<button>` with this `RiMenu2Line` icon in "Header.tsx" file over the First Menu:
+```javascript
+<button className="lg:hidden"><RiMenu2Line/></button>
+```
+2. Add a `hidden` to the First Menu in "Header.tsx" file:
+```javascript
+<ul className="hidden lg:flex items-center gap-6">
+```
+3. Add a Menu Mobile, below the first `<button>`:
+```javascript
+      <div className="fixed left-0 top-0 w-full h-full z-50 bg-[#181A20]">
+        <ul>Menu Mobile</ul>
+      </div>
+```
+4. Add `useState` like this:
+```javascript
+const [showMenu, setShowMenu ] = useState(false);
+```
+5. The `<button>` Activate or not the menu, and the menu appear based on the `showMemenu` status:
+```javascript
+      <button onClick={()=> setShowMenu(!showMenu)} className="lg:hidden">
+        <RiMenu2Line />
+      </button>
+      <div className={`fixed left-0 w-full h-full z-50 bg-[#181A20] ${showMenu?"top-0":"-top-full"} transition-all`}>
+        <ul>Menu Mobile</ul>
+      </div>
+```
+6. Add a `<button>` over the `<ul>Mobile Menu`:
+```javascript
+        <button onClick={()=> setShowMenu(!showMenu)}><RiCloseLine/></button>
+```
+7. Center the items of Menu only in new `<ul>` adding a `className`:
+```javascript
+<ul className=" w-full mt-20">
+```
+8. For the Menu add some elements to `className`, as `block text-center p-4 text-4xl`.
