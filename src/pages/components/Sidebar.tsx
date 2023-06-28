@@ -14,7 +14,7 @@ function Sidebar() {
   const [showSidebar, setShowSidebar] = useState(false);
   return (
     <>
-      <div className={`w-[80%] md:w-[40%] fixed lg:static top-0 ${showSidebar?"left-0":"-left-full"} lg:w-80 h-full overflow-y-scroll text-gray-400 bg-[#181A20] transition-all duration-200 p-3`}>
+      <div className={`w-[80%] md:w-[40%] fixed lg:static top-0 ${showSidebar?"left-0":"-left-full"} lg:w-80 h-full overflow-y-scroll lg:overflow-y-auto text-gray-400 bg-[#181A20] transition-all duration-200 p-3 lg:p-0`}>
         {/* Search */}
         <div className="bg-[#362C29] rounded-xl p-4 mb-3">
           <h4 className="mb-5 text-white text-lg">Categories</h4>
@@ -188,7 +188,7 @@ function Sidebar() {
         </ul>
       </div>
       {/* Mobile filter button */}
-      <button className="text-lg fixed bottom-4 right-4 bg-[#E58D27] rounded-full z-40 lg:hidden" onClick={() => setShowSidebar(!showSidebar)}>{showSidebar? <RiCloseLine/>:<RiFilterLine/>}</button>
+      <button className="text-lg md:text-2xl fixed bottom-4 right-4 bg-[#E58D27] rounded-full z-40 lg:hidden" onClick={() => setShowSidebar(!showSidebar)}>{showSidebar? <RiCloseLine/>:<RiFilterLine/>}</button>
     </>
   );
 }

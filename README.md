@@ -420,3 +420,31 @@ const [showSidebar, setShowSidebar] = useState(false);
 ```javascript
       `... md:w-[40%] ...`
 ```
+
+## 4c. Responsive the elemens in Content
+1. Change `className` elements of first image in "Content.tsx" file:
+```javascript
+        className="w-full h-[500px] object-cover object-right md:object-top rounded-2xl"
+```
+### Note: Better `object-cover` than `object-container`.
+
+2. Change in "Cart.tsx" file the first `<div>`:
+```javascript
+    <div className="bg-[#362C29]/50 p-6 rounded-2xl flex flex-col gap-2 w-full md:w-auto">
+```
+3. Change in `className`of `<div>` container of all cards the `justify-between` by `justify-arround` in "Content.tsx" file:
+```javascript
+      <div className="flex md:grid md:grid-cols-2 lg:flex items-center justify-around  lg:justify-between flex-wrap gap-8">
+```
+4. Change in "Cards.tsx" file in `<img>` some elements in the `className`:
+```javascript
+      <img
+        src={props.img}
+        className="w-full lg:w-52 h-72 lg:h-52 object-cover rounded-2xl"
+      />
+```
+5. Adding to `className` of "Sidebar.tsx" file this `lg:p-0`.
+6. Changes to `className`of "Sidebar.tsx" file in first `<div>`:
+```javascript
+    <div className={`w-[80%] md:w-[40%] fixed lg:static top-0 ${showSidebar?"left-0":"-left-full"} lg:w-80 h-full overflow-y-scroll lg:overflow-y-auto text-gray-400 bg-[#181A20] transition-all duration-200 p-3 lg:p-0`}>
+```

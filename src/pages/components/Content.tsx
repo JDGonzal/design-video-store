@@ -6,10 +6,10 @@ function Content() {
       <div className="rounded-2xl mb-4">
         <img
           src="https://as01.epimg.net/meristation/imagenes/2021/08/31/noticias/1630415976_693445_1630416052_portada_normal.jpg"
-          className="w-full h-[500px] object-cover object-top rounded-2xl"
+          className="w-full h-[500px]  object-cover object-right md:object-top rounded-2xl"
         />
       </div>
-      <div className="flex items-center justify-between flex-wrap gap-8">
+      <div className="flex md:grid md:grid-cols-2 lg:flex items-center justify-around  lg:justify-between flex-wrap gap-8">
         <Card
           img="https://image.api.playstation.com/vulcan/img/rnd/202011/0714/vuF88yWPSnDfmFJVTyNJpVwW.png"
           title="Marvel's Spider-Man"

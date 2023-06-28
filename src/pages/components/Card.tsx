@@ -5,11 +5,11 @@ const Card = (props: {
   price: string;
 }) => {
   return (
-    <div className="bg-[#362C29]/50 p-6 rounded-2xl flex flex-col gap-2">
+    <div className="bg-[#362C29]/50 p-6 rounded-2xl flex flex-col gap-2 w-full md:w-auto">
       {" "}
       <img
         src={props.img}
-        className="w-52 h-52 object-cover rounded-2x1"
+        className="w-full lg:w-52 h-72 lg:h-52 object-cover rounded-2xl"
       />
       <h1 className="text-xl text-white">{props.title}</h1>
       <span className="text-gray-400">{props.category}</span>
