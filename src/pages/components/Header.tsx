@@ -38,7 +38,7 @@ function Header() {
   };
 
   return (
-    <header className="h-[10vh] text-gray-400 py-4 px-10 flex items-center justify-between bg-[#181A20]">
+    <header className="h-[7vh] lg:h-[10vh] text-gray-400 py-4 px-10 flex items-center justify-between bg-[#181A20] z-40">
       {/* Menu Mobile */}
       <button onClick={() => setShowMenu(!showMenu)} className="lg:hidden">
         <RiMenu2Line />
