@@ -448,3 +448,92 @@ const [showSidebar, setShowSidebar] = useState(false);
 ```javascript
     <div className={`w-[80%] md:w-[40%] fixed lg:static top-0 ${showSidebar?"left-0":"-left-full"} lg:w-80 h-full overflow-y-scroll lg:overflow-y-auto text-gray-400 bg-[#181A20] transition-all duration-200 p-3 lg:p-0`}>
 ```
+
+## 5a. Adding "Login" Component with basic elements
+1. Create in "pages" directory, two new directories: Home and Login. 
+2. Move the "Home.tsx" file to the "Home" directory. 
+3. Create a "Login.tsx" file into "Login" directory, run the `rfce` snippet, delete first line.  
+4. Create a "components" directory into "src" directory and move the "Colors.ts" and "Header.tsx" files.
+5. Into the each directory of "pages" create a "components" directory for the exclusives components for each page.
+6. Add or Update the "index.ts" file into each directory.
+7. Add a "AuthWrapper.tsx" fiel into "components of root, run the `rfce` snippet, delete first line. 
+8. Add this code to "AuthWrapper.tsx" file:
+```javascript
+const AuthWrapper=(props: {
+  isAuthenticated:boolean;}
+  ) => {
+  return props.isAuthenticated ? (
+    <Navigate to="/home" replace />
+  ) : (
+    <Navigate to="/login" replace />
+  );
+}
+```
+9. Changes in "App.tsx" file like this, the first page to show will be "login" while the `isAuthnticaded` keeps on false:
+```javascript
+function App() {
+  const isAuthenticated = false;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={<AuthWrapper isAuthenticated={isAuthenticated} />}
+        />
+        <Route path="/home" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
+10. The "Login.tsx" file add a `<form>`.
+11. Add in `<form>` the some `<label>`'s, `<input>`'s, and `<button>`'s.' :
+```javascript
+        <form onSubmit={handleSubmit} className="w-[40vh] rounded-xl p-4 m-8 bg-slate-200 items-center text-center">
+          <h4>Inicio Sesión"</h4>
+          <div>
+            <label htmlFor="">Correo</label>
+            <input type="text" />
+          </div>
+          <div>
+            <label htmlFor="">Contraseña</label>
+            <input type="password" />
+          </div>
+          <div>
+            <button type="submit">Iniciar Sesión</button>
+          </div>
+          <div>
+            <button>No tiene una cuenta, Registrarse Aquí</button>
+          </div>
+        </form>
+```
+12. Add some `className` with Tailwind CSS elements.
+13. Add `useState`to show the Registry options:
+```javascript
+const [showRegistry, setShowRegistry] = useState(false);
+```
+14. Use this `useState` in the last `<button>`.
+```javascript
+    <button className="..." onClick={() => setShowRegistry(!showRegistry)}>
+```
+15. To the `<form>` add a `onSubmit={handleSubmit}`, and create the function:
+```javascript
+const handleSubmit = (e: any) => {
+    e.preventDefault(); // Avoid page refreshing.
+  };
+```
+16. Add some Elements when `showRegistry` is in true. that keeps hide some elements.e.g.:
+```javascript
+          <div
+            className={`${
+              showRegistry ? "visible" : "hidden"
+            } ...`}
+          >
+            <label>Confirmar contraseña</label>
+            <input
+              className="rounded-md" type="password"
+              placeholder="Confirmar contraseña"
+            />
+          </div>
+```

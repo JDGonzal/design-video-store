@@ -1,4 +1,5 @@
-import { Content, Header, Sidebar } from "./components";
+import { Header } from "@/components";
+import { Sidebar, Content } from ".";
 
 const Home = () => {
   return (

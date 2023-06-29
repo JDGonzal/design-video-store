@@ -7,7 +7,7 @@ import {
   RiFilterLine,
   RiCloseLine,
 } from "react-icons/ri";
-import { darkBrown } from "./.";
+import { darkBrown } from "@/components";
 import { useState } from "react";
 
 function Sidebar() {
