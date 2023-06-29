@@ -1,2 +1,3 @@
-export { default as Home } from './Home';
-export * from './components';
+export * from './Home/components';
+export * from './Home';
+export * from './Login';
