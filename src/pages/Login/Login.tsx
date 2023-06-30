@@ -1,9 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { Header } from "@/components";
+import { LoginEmail } from "./components";
 
 function Login() {
   const [showRegistry, setShowRegistry] = useState(false);
+
+  const [validData, setValidData] = useState(false);
+
+  const choosevalidData = (validData:any) => {
+    setValidData(validData);
+  };
+  
+  console.log('Valid(Login.tsx):', validData);
 
   const handleSubmit = (e: any) => {
     e.preventDefault(); // Avoid page refreshing.
@@ -21,14 +30,7 @@ function Login() {
           <h4 className="mb-5 text-black text-2xl font-bold w-full">
             {showRegistry ? "Registro" : "Inicio Sesión"}
           </h4>
-          <div className="flex flex-col gap-2 bg-slate-100 p-2 rounded-md mb-3">
-            <label htmlFor="">Correo</label>
-            <input
-              className="rounded-md"
-              type="text"
-              placeholder="correo@electronico.srv"
-            />
-          </div>
+          <LoginEmail choosevalidData={choosevalidData}/>
           <div className={`${showRegistry ? "visible" : "hidden"}`}>
             <div className="flex flex-col gap-2 bg-slate-100 p-2 rounded-md mb-3">
               <label htmlFor="">Centro Médico</label>
