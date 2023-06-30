@@ -538,7 +538,7 @@ const handleSubmit = (e: any) => {
           </div>
 ```
 
-## 5b. The Login, divide into components
+## 5b. The Login-Email first component from Login
 1. Create a "components" directory into "Login" directory.
 2. Create a "Login-Email.tsx" file, run the `rfce` snippet and delete the first line. 
 3. Move all regarding email from "Login.tsx" to the "LoginEmail.tsx" component and call the new component `<LoginEmail/>` into "Login.tsx" file.
@@ -559,4 +559,139 @@ const handleSubmit = (e: any) => {
 * To the `<input>` add a `required` value
 ```javascript
       <input ... required={true} />
+```
+5. Play with a `useState` to send a function can be executed in a Children component, in this case is "Login-Email.tsx" file.
+
+## 6. Install Redux and share info to validate fields
+1. [Install Redux Toolkik an React-Redux](https://redux-toolkit.js.org/tutorials/quick-start)
+
+```Mathematica 
+pnpm install @reduxjs/toolkit react-redux
+```
+2. Create a "models" directory in the root ("src/models").
+3. Add a "validation.model.ts" file wih this information:
+```javascript
+export interface ValidationInterface{
+  id: string;
+  value: string;
+  type: ValidationType;
+  isValid: boolean;
+  message?: string;
+}
+export enum ValidationType{
+  String_ = "string",
+  Number_ = "number",
+  Boolean_ = "boolean",
+}
+```
+4. Create a "redux" directory, and put there the "store.ts" file, with those lines:
+```javascript
+import { configureStore } from "@reduxjs/toolkit";
+export default configureStore({});
+```
+5. Create a "states" directory, and create the "validationsSlice.ts" file, with this inside:
+```javascript
+import { createSlice } from '@reduxjs/toolkit';
+import { ValidationInterface } from '@/models';
+const initialState: ValidationInterface[] = [];
+export const validationsSlice = createSlice({
+  name: 'validation', initialState: initialState, 
+  reducers:{ }
+});
+export default validationsSlice.reducer;
+```
+### Note: Always create the "index.ts" in each directory file and update the barrels.
+
+6. Update the "store.ts" file and it is the expected result:
+```javascript
+import { configureStore } from "@reduxjs/toolkit";
+import { validationsSlice } from "./states";
+import { ValidationInterface } from "@/models";
+export interface AppStore {
+  validations: ValidationInterface[];
+}
+export default configureStore<AppStore>({
+  reducer: {
+    validations: validationsSlice.reducer,
+  }
+});
+```
+7. In the main file "App.tsx" add a `Provider` to include all the others
+```javascript
+import { Provider } from "react-redux";
+```
+8. Import the `store` from "store.ts", in "App.tsx" file:
+```javascript
+import store from "./redux/store";
+```
+9. Finally I change the return of "App.tsx" file by this:
+```javascript
+    return (
+      <Provider store={store}>
+      ...
+      </Provider>
+    );
+```
+10. Add in "validationsSlice.ts" a `reducers` with the name: `addValidation`, like this:
+```javascript
+    addValidation: (state, action) => {
+      const validationFound = state.find(validation => validation.id === action.payload.id);
+      if (!validationFound) {
+        state.push(action.payload);
+      }
+    }
+```
+11. Add this `addValidation` in "Login-Email.tsx" file in a `useEffect`, to run only once:
+```javascript
+  useEffect(() =>{
+    dispatch( addValidation({ 
+      id: "email",
+      value: email,
+      type: "string",
+      isValid: false,
+      message: "Email",
+    }));
+  },[]);
+```
+12. Create an `useState` in "Login-Email.tsx" file, to control de changes on the field:
+```javascript
+const [email, setEmail] = useState("");
+```
+13. Add a function called `handleChange` to update the `email` uf the `useState`:
+```javascript
+  const handleChange = (e: any) => {
+    setEmail(e.target.value);
+  };
+```
+13. Call this function in the `<input>` element using `onChange={handleChange}`.
+14. Add in "validationsSlice.ts" a `reducers` with the name: `aupdateValidation`, like this:
+```javascript
+    updateValidation: (state, action) => {
+      const { id, value, isValid } = action.payload;
+      const validationFound = state.find(validation => validation.id === id);
+      if (validationFound) {
+        validationFound.value = value;
+        validationFound.isValid = isValid;
+      }
+    }
+```
+15. Add a function called `handleBlur` to validate the email and feed `validations` with `updateValidation` in "Login-Email.tsx" file:
+```javascript
+  const handleBlur = async (e: any) =>{
+    const isOk = await /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(e.target.value);
+    dispatch( updateValidation({ 
+      id: "email",
+      value: email,
+      isValid: isOk,
+    }));
+  }
+```
+16. Call this function in the `<input>` element using `onBlur={handleBlur}`.
+17. Just for validate in the `handleSubmit` of "Login.tsx" file, to show the validation:
+```javascript
+  const validations = useSelector((state: AppStore) => state.validations);
+  const handleSubmit = (e: any) => {
+    e.preventDefault(); // Avoid page refreshing.
+    console.log('Validations:', validations);
+  };
 ```

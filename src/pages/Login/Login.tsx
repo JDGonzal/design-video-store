@@ -1,21 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
+import { useSelector } from "react-redux";
+
 import { Header } from "@/components";
 import { LoginEmail } from "./components";
+import { AppStore } from "@/redux";
 
 function Login() {
   const [showRegistry, setShowRegistry] = useState(false);
 
-  const [validData, setValidData] = useState(false);
-
-  const choosevalidData = (validData:any) => {
-    setValidData(validData);
-  };
-  
-  console.log('Valid(Login.tsx):', validData);
+  const validations = useSelector((state: AppStore) => state.validations);
 
   const handleSubmit = (e: any) => {
     e.preventDefault(); // Avoid page refreshing.
+    console.log('Validations:', validations);
   };
 
   return (
@@ -30,7 +28,7 @@ function Login() {
           <h4 className="mb-5 text-black text-2xl font-bold w-full">
             {showRegistry ? "Registro" : "Inicio Sesión"}
           </h4>
-          <LoginEmail choosevalidData={choosevalidData}/>
+          <LoginEmail/>
           <div className={`${showRegistry ? "visible" : "hidden"}`}>
             <div className="flex flex-col gap-2 bg-slate-100 p-2 rounded-md mb-3">
               <label htmlFor="">Centro Médico</label>
@@ -119,7 +117,7 @@ function Login() {
               onClick={() => setShowRegistry(!showRegistry)}
             >
               {showRegistry
-                ? "Tiene cuenta, Inicie Sesión Aquí"
+                ? "Tiene una cuenta, Inicie Sesión Aquí"
                 : "No tiene una cuenta, Registrarse Aquí"}
             </button>
           </div>
