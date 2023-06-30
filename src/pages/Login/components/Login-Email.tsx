@@ -1,10 +1,35 @@
+import { addValidation, updateValidation } from "@/redux";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const LoginEmail = (props: { choosevalidData: any }) => {
+const LoginEmail = () => {
+
+  const [email, setEmail] = useState("");
+  const dispatch = useDispatch();
+
+  useEffect(() =>{
+    dispatch( addValidation({ 
+      id: "email",
+      value: email,
+      type: "string",
+      isValid: false,
+      message: "Email",
+    }));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[]);
+
+  const handleChange = (e: any) => {
+    setEmail(e.target.value);
+  };
 
   const handleBlur = async (e: any) =>{
-    const isok = await /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(e.target.value);
-    console.log(isok, props.choosevalidData, e.target.value);
-    await props.choosevalidData(isok);
+    const isOk = await /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(e.target.value);
+    dispatch( updateValidation({ 
+      id: "email",
+      value: email,
+      isValid: isOk,
+    }));
   }
 
   return (
@@ -20,6 +45,7 @@ const LoginEmail = (props: { choosevalidData: any }) => {
         required={true}
         autoComplete="username"
         onBlur={handleBlur}
+        onChange={handleChange}
       />
     </div>
   );
