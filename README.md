@@ -537,3 +537,26 @@ const handleSubmit = (e: any) => {
             />
           </div>
 ```
+
+## 5b. The Login, divide into components
+1. Create a "components" directory into "Login" directory.
+2. Create a "Login-Email.tsx" file, run the `rfce` snippet and delete the first line. 
+3. Move all regarding email from "Login.tsx" to the "LoginEmail.tsx" component and call the new component `<LoginEmail/>` into "Login.tsx" file.
+4. To become a field with label as a _Mandatory_, need:
+* Add in "index.css" file in the root, this:
+```CSS
+.form-group.required .control-label:after { 
+  content:"*";
+  color:red;
+}
+```
+* The Component add some elements in `className` of `<label/>,` e.g.:
+```javascript
+      <label htmlFor="" className="control-label">
+        Correo
+      </label>
+```
+* To the `<input>` add a `required` value
+```javascript
+      <input ... required={true} />
+```
