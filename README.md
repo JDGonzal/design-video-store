@@ -576,6 +576,7 @@ export interface ValidationInterface{
   value: string;
   type: ValidationType;
   isValid: boolean;
+  isVisible:boolean;
   message?: string;
 }
 export enum ValidationType{
@@ -589,7 +590,7 @@ export enum ValidationType{
 import { configureStore } from "@reduxjs/toolkit";
 export default configureStore({});
 ```
-5. Create a "states" directory, and create the "validationsSlice.ts" file, with this inside:
+5. Create a "states" directory into "redux" directory, and create the "validationsSlice.ts" file, with this inside:
 ```javascript
 import { createSlice } from '@reduxjs/toolkit';
 import { ValidationInterface } from '@/models';
@@ -624,7 +625,7 @@ import { Provider } from "react-redux";
 ```javascript
 import store from "./redux/store";
 ```
-9. Finally I change the return of "App.tsx" file by this:
+9. Finally I change the return of "App.tsx" file like this:
 ```javascript
     return (
       <Provider store={store}>
@@ -649,6 +650,7 @@ import store from "./redux/store";
       value: email,
       type: "string",
       isValid: false,
+      isVisible: props.isVisible,
       message: "Email",
     }));
   },[]);
@@ -664,7 +666,7 @@ const [email, setEmail] = useState("");
   };
 ```
 13. Call this function in the `<input>` element using `onChange={handleChange}`.
-14. Add in "validationsSlice.ts" a `reducers` with the name: `aupdateValidation`, like this:
+14. Add in "validationsSlice.ts" a `reducers` with the name: `updateValidation`, like this:
 ```javascript
     updateValidation: (state, action) => {
       const { id, value, isValid } = action.payload;
@@ -694,4 +696,43 @@ const [email, setEmail] = useState("");
     e.preventDefault(); // Avoid page refreshing.
     console.log('Validations:', validations);
   };
+```
+
+## 7. Adding a Login-Password as new Component
+1. Copy the "Login-Email.tsx" in "Login-Password.tsx".
+2. Rename in "Login-Password.tsx" the `LoginEmail` by `LoginPassword`.
+3. Renamame all `Email` by `Password` and `email` by `password`.
+4. Move all the Information from "Login.tsx" to "Login-Password.tsx" regarding the `Password`.
+5. Add two `useState` for `strengthBadge`, and `backgroundColor`.
+6. Create two Regular Expressions:
+```javascript
+  const strongPassword = new RegExp(
+    "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})"
+  );
+  const mediumPassword = new RegExp(
+    "((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{6,}))|((?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9])(?=.{8,}))"
+  );
+```
+7. Add a function to use the Regular Expresions and feed the `strengthBadge` and `backgroundColor`:
+```javascript
+ const strengthChecker = async (password: string) => {
+    let isValid = false;
+    if (await strongPassword.test(password) && password.length >= 10) {
+      setbackgroundColor(" bg-green-700");
+      setstrengthBadge("Fuerte");
+      isValid=true;
+    } else if ( await mediumPassword.test(password) && password.length >= 6) {
+      setbackgroundColor(" bg-orange-500");
+      setstrengthBadge("Medio");
+      isValid=true;
+    } else {
+      setbackgroundColor(" bg-red-700");
+      setstrengthBadge("Débil");
+    }
+    return isValid;
+  };
+```
+8. Call in Login the New Component:
+```javascript
+    <LoginPassword isVisible={showRegistry}/>
 ```

@@ -14,11 +14,12 @@ export const validationsSlice = createSlice({
       }
     },
     updateValidation: (state, action) => {
-      const { id, value, isValid } = action.payload;
+      const { id, value, isValid, isVisible } = action.payload;
       const validationFound = state.find(validation => validation.id === id);
       if (validationFound) {
         validationFound.value = value;
         validationFound.isValid = isValid;
+        validationFound.isVisible = isVisible;
       }
     },
   }
