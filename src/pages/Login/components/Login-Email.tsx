@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const LoginEmail = () => {
+const LoginEmail = (props: { isVisible: boolean}) => {
 
   const [email, setEmail] = useState("");
   const dispatch = useDispatch();
@@ -14,6 +14,7 @@ const LoginEmail = () => {
       value: email,
       type: "string",
       isValid: false,
+      isVisible: props.isVisible,
       message: "Email",
     }));
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -23,12 +24,15 @@ const LoginEmail = () => {
     setEmail(e.target.value);
   };
 
+  const emailRegExp = new RegExp(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g);
+  
   const handleBlur = async (e: any) =>{
-    const isOk = await /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(e.target.value);
+    const isOk = await emailRegExp.test(e.target.value);
     dispatch( updateValidation({ 
       id: "email",
       value: email,
       isValid: isOk,
+      isVisible: props.isVisible,
     }));
   }
 
@@ -44,6 +48,8 @@ const LoginEmail = () => {
         placeholder="correo@electronico.srv"
         required={true}
         autoComplete="username"
+        id='email'
+        name='email'
         onBlur={handleBlur}
         onChange={handleChange}
       />

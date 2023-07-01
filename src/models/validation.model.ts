@@ -3,6 +3,7 @@ export interface ValidationInterface{
   value: string;
   type: ValidationType;
   isValid: boolean;
+  isVisible:boolean;
   message?: string;
 }
 
