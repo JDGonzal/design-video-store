@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 
 import { Header } from "@/components";
-import { LoginEmail, LoginPassword } from "./components";
+import { LoginEmail, LoginMedicalCenter, LoginPassword } from "./components";
 import { AppStore } from "@/redux";
 
 function Login() {
@@ -29,29 +29,7 @@ function Login() {
             {showRegistry ? "Registro" : "Inicio Sesión"}
           </h4>
           <LoginEmail isVisible={true}/>
-          <div className={`${showRegistry ? "visible" : "hidden"}`}>
-            <div className="flex flex-col gap-2 bg-slate-100 p-2 rounded-md mb-3">
-              <label htmlFor="">Centro Médico</label>
-              <div className="rounded-md flex flex-col gap-1">
-                <input type="number" placeholder="Nit Centro Médico" />
-                <input type="text" placeholder="Nombre Centro Médico" />
-                <input type="text" placeholder="Dirección Centro Médico" />
-                <input type="number" placeholder="Teléfono Centro Médico" />
-                <div className="flex flex-col-2 gap-1">
-                  <input
-                    type="text"
-                    className="w-[50%]"
-                    placeholder="Departamento"
-                  />
-                  <input
-                    type="text"
-                    className="w-[50%]"
-                    placeholder="Municipio"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+          <LoginMedicalCenter isVisible={showRegistry}/>
           <LoginPassword isVisible={showRegistry}/>
           <div
             className={`${

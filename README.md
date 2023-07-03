@@ -736,3 +736,38 @@ const [email, setEmail] = useState("");
 ```javascript
     <LoginPassword isVisible={showRegistry}/>
 ```
+
+## 8. Adding the Component called Login-MedicalCenter
+1. Copy the "Login-Email.tsx" in "Login-MedicalCenter.tsx".
+2. Rename in "Login-MedicalCenter.tsx" the `LoginEmail` by `LoginMedicalCenter`.
+3. Renamame all `Email` by `MedicalCenter` and `email` by `medicalCenter`.
+4. Move all the Information from "Login.tsx" to "Login-Password.tsx" regarding the `MedicalCenter`.
+5. Create a Model called "medical-center.model.ts" with this structure (update the "intex.ts" or the barrel, after this one):
+```javascript
+export interface MedicalCenterInterface{
+  id: number;
+  name: string;
+  address: string;
+  telephone: number;
+  stateId:number;
+  cityId: number;
+}
+```
+6. Because the Medical Center is a JSON, create a `initialValue`, to use in the `useState`:
+```javascript
+  const initialState: MedicalCenterInterface = {
+    id: 0, name: "",
+    address: "", telephone: 0,
+    stateId: 0, cityId: 0,
+  };
+  const [medicalCenter, setMedicalCenter] = useState(initialState);
+  const dispatch = useDispatch();
+```
+7. For `handleChange` just add the `id` in this `medicalCenter` object:
+```javascript
+  const handleChange = async(e: any) => {
+    setMedicalCenter({
+      ...medicalCenter, id: parseInt(e.target.value),
+    });
+  };
+```

@@ -1,3 +1,4 @@
+import { ValidationType } from "@/models";
 import { addValidation, updateValidation } from "@/redux";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -12,7 +13,7 @@ const LoginEmail = (props: { isVisible: boolean}) => {
     dispatch( addValidation({ 
       id: "email",
       value: email,
-      type: "string",
+      type: ValidationType.String_,
       isValid: false,
       isVisible: props.isVisible,
       message: "Email",

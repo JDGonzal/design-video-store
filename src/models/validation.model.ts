@@ -11,4 +11,5 @@ export enum ValidationType{
   String_ = "string",
   Number_ = "number",
   Boolean_ = "boolean",
+  Json_ = "json",
 }
