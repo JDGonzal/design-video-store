@@ -1,3 +1,4 @@
+import { ValidationType } from "@/models";
 import { addValidation, updateValidation } from "@/redux";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -14,7 +15,7 @@ const LoginPassword = (props: { isVisible: boolean }) => {
       addValidation({
         id: "password",
         value: password,
-        type: "string",
+        type: ValidationType.String_,
         isValid: false,
         isVisible: props.isVisible,
         message: "password",
@@ -53,7 +54,7 @@ const LoginPassword = (props: { isVisible: boolean }) => {
   };
 
   const handleBlur = async (e: any) => {
-    const isOk =await strengthChecker(password);
+    const isOk =await strengthChecker(e.target.value);
     await dispatch(
       updateValidation({
         id: "password",
