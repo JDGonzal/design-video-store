@@ -6,8 +6,8 @@ import { useDispatch } from "react-redux";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const LoginPassword = (props: { isVisible: boolean }) => {
   const [password, setPassword] = useState("");
-  const [strengthBadge, setstrengthBadge] = useState("-");
-  const [backgroundColor, setbackgroundColor] = useState("");
+  const [strengthBadge, setstrengthBadge] = useState("Nivel");
+  const [backgroundColor, setbackgroundColor] = useState("bg-blue-300");
   const dispatch = useDispatch();
 
   useEffect(() => {
