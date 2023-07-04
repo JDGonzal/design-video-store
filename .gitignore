@@ -149,3 +149,5 @@ dist-ssr
 .pnp.*	
 *.7z			   
 .vite/
+.env.development
+.env.production

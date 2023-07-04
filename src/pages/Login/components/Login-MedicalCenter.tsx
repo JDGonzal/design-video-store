@@ -1,54 +1,104 @@
 import { addValidation, updateValidation } from "@/redux";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { MedicalCenterInterface } from "@/models/medical-center.model";
 import { ValidationType } from "@/models";
+import { VITE_API_URL } from "@/utilities";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const LoginMedicalCenter = (props: { isVisible: boolean }) => {
+  const isFirstTime = useRef(true);
+
   const initialState: MedicalCenterInterface = {
     id: 0,
-    name: "",
-    address: "",
-    telephone: 0,
-    stateId: 0,
-    cityId: 0,
+    ok: false,
+    found: 0,
+    medicalCenterName: "",
+    medicalCenterAddress: "",
+    medicalCenterTelNumber: 0,
+    StateStateId: 0,
+    CityCityId: 0,
   };
 
   const [medicalCenter, setMedicalCenter] = useState(initialState);
+  const [isNewMedicalCenter, setIsNewMedicalCenter] = useState(0);
+  const [isOkMedicalCenter, setIsOkMedicalCenter] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(
-      addValidation({
-        id: "medicalCenter",
-        value: medicalCenter,
-        type: ValidationType.Json_,
-        isValid: false,
-        isVisible: props.isVisible,
-        message: "MedicalCenter",
-      })
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (isFirstTime.current) {
+      isFirstTime.current = false;
+      dispatch(
+        addValidation({
+          id: "medicalCenter",
+          value: medicalCenter,
+          type: ValidationType.Json_,
+          isValid: false,
+          isVisible: props.isVisible,
+          message: "MedicalCenter",
+        })
+      );
+    } else {
+      dispatch(
+        updateValidation({
+          id: "medicalCenter",
+          value: medicalCenter,
+          isValid: isOkMedicalCenter,
+          isVisible: props.isVisible,
+        })
+      );
+    }
+  }, [dispatch, medicalCenter, props.isVisible, isOkMedicalCenter]);
 
-  const handleChange = async (e: any) => {
+  const siteMedicalCenter = "medicalcenter";
+
+  const refreshMedicalCenters = () => {
+    const apiUrl = `${VITE_API_URL}${siteMedicalCenter}/medicalcentername/${medicalCenter.id}`;
+    console.log(apiUrl);
+    let dataMedicalCenter: MedicalCenterInterface = medicalCenter;
+    fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then(
+        (data) => {
+          console.log(data.found, data);
+          setIsNewMedicalCenter(data.found as number),
+            (dataMedicalCenter = data as MedicalCenterInterface);
+          setMedicalCenter({
+            ...medicalCenter,
+            ok: dataMedicalCenter.ok,
+            found: dataMedicalCenter.found,
+            medicalCenterName: dataMedicalCenter.medicalCenterName,
+            medicalCenterAddress: dataMedicalCenter.medicalCenterAddress,
+            medicalCenterTelNumber: dataMedicalCenter.medicalCenterTelNumber,
+            StateStateId: dataMedicalCenter.StateStateId,
+            CityCityId: dataMedicalCenter.CityCityId,
+          });
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+  };
+
+  const handleChange = (e: any) => {
     setMedicalCenter({
       ...medicalCenter,
       id: parseInt(e.target.value),
     });
+    setIsOkMedicalCenter(String(e.target.value).length >= 6);
+
+    if (isOkMedicalCenter) refreshMedicalCenters();
   };
 
-  const handleBlur = async (e: any) => {
-    const isOk = (await String(e.target.value).length) > 5;
-    dispatch(
-      updateValidation({
-        id: "medicalCenter",
-        value: medicalCenter,
-        isValid: isOk,
-        isVisible: props.isVisible,
-      })
-    );
+  const handleBlur = (e: any) => {
+    if (isOkMedicalCenter) refreshMedicalCenters();
+    console.log("handleBlur:", isNewMedicalCenter, medicalCenter);
   };
 
   return (
@@ -67,9 +117,9 @@ const LoginMedicalCenter = (props: { isVisible: boolean }) => {
             onBlur={handleBlur}
             onChange={handleChange}
           />
-          <input type="text" placeholder="Nombre Centro Médico" />
-          <input type="text" placeholder="Dirección Centro Médico" />
-          <input type="number" placeholder="Teléfono Centro Médico" />
+          <input type="text" placeholder="Nombre Centro Médico" value={medicalCenter.medicalCenterName} />
+          <input type="text" placeholder="Dirección Centro Médico" value={medicalCenter.medicalCenterAddress}/>
+          <input type="number" placeholder="Teléfono Centro Médico" value={medicalCenter.medicalCenterTelNumber}/>
           <div className="flex flex-col-2 gap-1">
             <input type="text" className="w-[50%]" placeholder="Departamento" />
             <input type="text" className="w-[50%]" placeholder="Municipio" />

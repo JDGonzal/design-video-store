@@ -771,3 +771,70 @@ export interface MedicalCenterInterface{
     });
   };
 ```
+
+## 9. The Medical Center Component adding data from the API 
+### This API added here in the future will be moved to the other Component. T
+his is for fast test used.
+
+1 Create two files ".env", you could based on this [Generic dotenv Format](https://hexdocs.pm/dotenvy/dotenv-file-format.html), or in our case using the [React Custom Environment Variables](https://create-react-app.dev/docs/adding-custom-environment-variables/). Put both files in the root, even before the "src" directory
+
+![dotenv files in root](images/2023-07-03_162516.png)
+2. The names of Environment Variables must start with `VITE_`.
+3. Create a directory in the root, called "src/utilities"
+4. Inside this "utilities" create a File called "env.utility.ts" file, using the data from ".env" file:
+```javascript
+export const{VITE_API_URL, VITE_PHOTO_URL} = import.meta.env;
+```
+
+### Note: The ".env" or ".env.xxx" file never uploads to the repository and is never exposed in any document, it is totally secret.
+
+5. Add a `const` in "Login-MedicalCenter.tsx" file as `siteMedicalCenter`:
+```javascript
+const siteMedicalCenter = "medicalcenter";
+```
+6 Create a function `refreshMedicalCenters()` to use the API information.
+7. Modify the "medical-center.model.ts" file based on the API answer:
+```javascript
+export interface MedicalCenterInterface{
+  id:                     number;
+  ok:                     boolean;
+  found:                  number;
+  medicalCenterName:      string;
+  medicalCenterAddress:   string;
+  medicalCenterTelNumber: number;
+  StateStateId:           number;
+  CityCityId:             number;
+}
+```
+8. Add a `useRef` to control the first time of `useEffect`
+```javascript
+const isFirstTime = useRef(true);
+```
+9. Change the `useEffect` to be pending for Add or Update the Validations:
+```javascript
+  useEffect(() => {
+    if (isFirstTime.current) {
+      isFirstTime.current = false;
+      dispatch(
+        addValidation({
+          id: "medicalCenter",
+          value: medicalCenter,
+          type: ValidationType.Json_,
+          isValid: false,
+          isVisible: props.isVisible,
+          message: "MedicalCenter",
+        })
+      );
+    } else {
+      dispatch(
+        updateValidation({
+          id: "medicalCenter",
+          value: medicalCenter,
+          isValid: isOkMedicalCenter,
+          isVisible: props.isVisible,
+        })
+      );
+    }
+  }, [dispatch, medicalCenter, props.isVisible, isOkMedicalCenter]);
+```
+10. In the future complete the Fields based on the API answer and let to select the `state`(Departamento) and the `city`(Ciudad), verify the Password and the UserType (Clínica, Laboratorio, Administrador).
