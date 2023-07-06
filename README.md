@@ -887,7 +887,7 @@ export const createMedicalCenterAdapter = (data: any): MedicalCenterInterface =>
   cityId: data.CityCityId,
   cityName: '',
 });
-````
+```
 4. Change again the "medical-center.model.ts" file:
 ```javascript
 export interface MedicalCenterInterface{
@@ -925,7 +925,7 @@ const refreshMedicalCenters = async () => {
           dispatch( createAlert({ title: "Error",
               message:
                 "Se ha presentado una falla.\nPor favor avisarle al administrador",
-              textColor: "text-color-500", background: "bg-yellow-300",
+              textColor: "text-red-500", background: "bg-yellow-300",
               timeout: 5000, isVisible: true,
             }) );
         } }
@@ -942,7 +942,7 @@ export interface BannerAlertInterface{
   isVisible:boolean;
 }
 ```
-8. Add a new `slice` to control elements of the new "BannerAlert" component, called "bannerAlerSlice.ts":
+8. Add a new `slice` to control elements of the new "BannerAlert" component, called "bannerAlertSlice.ts":
 ```javascript
 import { createSlice } from '@reduxjs/toolkit';
 import { BannerAlertInterface } from '@/models';
@@ -1006,3 +1006,18 @@ function BannerAlert() {
 export default BannerAlert;
 ```
 11. Improvement: The Banner-Alert, only must show in real fail, pending for solution.
+
+## 11. For Login-MedicalCenter.tsx to show the "Departamento" and "Municipio"
+
+1. Create two new `adapters` for City and Estado (state or Deparment).
+2. Create two new `services` for City and Estado (state or Deparment).
+3. Create two new `models` for City and Estado (state or Deparment).
+4. Create two new `slices` for City and Estado (state or Deparment).
+
+### Note: Normaly for Deparment or State I could use "state" but it can generate issues, then it was changes by "Estado" (spanish).
+
+5. Moving the basic Alert message to the "utilities" directory.
+6. Add the `interface` from models and the `reducer` from Slice in "states" directory to "store.ts" file.
+7. Changes in `refreshMedicalCenters` method.
+8. Adding a `useEffect` in "Login.tsx" file.
+9. This `useEffect` will fill the Estados and Cities.

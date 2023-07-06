@@ -1,14 +1,13 @@
 import { VITE_API_URL } from "@/utilities";
-const site = 'medicalcenter';
+const site = 'state';
 
-export const getMedicalCenter = async (id: number) => {
+export const getStates = async () => {
 
-  const apiUrl = await `${VITE_API_URL}${site}/medicalcentername/${id}`;
-  if (await !isNaN(id)) {
+  const apiUrl = await `${VITE_API_URL}${site}`;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let response: any = {};
     try {
-      console.log('getMedicalCenter:', apiUrl);
+      console.log('getStates:', apiUrl);
       const result = await fetch(apiUrl, {
         method: "GET",
         headers: {
@@ -19,7 +18,6 @@ export const getMedicalCenter = async (id: number) => {
       response = await result.json();
       return response;
     } catch (err) {
-      console.log('getMedicalCenter:',err);
+      console.log('getStates:',err);
     }
-  }
 }

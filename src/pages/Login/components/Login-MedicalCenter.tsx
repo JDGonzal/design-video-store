@@ -1,11 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { addValidation, createAlert, updateValidation } from "@/redux";
+import {
+  AppStore,
+  addValidation,
+  createAlert,
+  updateValidation,
+} from "@/redux";
 import { useEffect, useState, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ValidationType, MedicalCenterInterface } from "@/models";
 import { getMedicalCenter } from "@/api-services";
 import { createMedicalCenterAdapter } from "@/adapters";
+import { alertError } from "@/utilities";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const LoginMedicalCenter = (props: { isVisible: boolean }) => {
@@ -24,9 +30,11 @@ const LoginMedicalCenter = (props: { isVisible: boolean }) => {
     cityName: "",
   };
 
+  const estadosList = useSelector((state: AppStore) => state.estadosList);
+  const citiesList = useSelector((state: AppStore) => state.citiesList);
   const [medicalCenter, setMedicalCenter] = useState(initialState);
-  const [isNewMedicalCenter, setIsNewMedicalCenter] = useState(0);
-  const [isOkMedicalCenter, setIsOkMedicalCenter] = useState(false);
+  const [lastMedicalCenter, setLastMedicalCenter] = useState(0);
+  let isOkMedicalCenter = false;
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -54,32 +62,28 @@ const LoginMedicalCenter = (props: { isVisible: boolean }) => {
     }
   }, [dispatch, medicalCenter, props.isVisible]);
 
-  const refreshMedicalCenters = async () => {
-    await setIsNewMedicalCenter(0);
-    await getMedicalCenter(medicalCenter.id).then((data: any) => {
-      console.log("data:", data);
-      if (data && data.ok) {
-        const adapded = createMedicalCenterAdapter(data);
-        adapded["id"] = medicalCenter.id;
-        console.log("adapted", adapded);
-        setMedicalCenter({ ...adapded });
-        setIsNewMedicalCenter(data.found);
-      }
-      if (data === undefined) {
-        console.log("undefined");
+  const refreshMedicalCenters = async (id: number) => {
+    await getMedicalCenter(id).then(async (data: any) => {
+      if (await !data) {
+        await dispatch(createAlert(alertError));
       } else {
-        if (!data.ok) {
-          dispatch(
-            createAlert({
-              title: "Error",
-              message:
-                "Se ha presentado una falla.\nPor favor avisarle al administrador",
-              textColor: "text-color-500",
-              background: "bg-yellow-300",
-              timeout: 5000,
-              isVisible: true,
-            })
+        await console.log("data:", data);
+        if ((await data) && data.ok) {
+          await setLastMedicalCenter(data.found);
+          const adapded: any = await createMedicalCenterAdapter(data);
+          adapded["id"] = await id;
+          const estadoFound = estadosList.find(
+            (estadoList) => estadoList.estadoId === medicalCenter.stateId
           );
+          if (estadoFound) adapded.stateName = estadoFound.estadoName;
+          const cityFound = await citiesList.find(
+            (cityList) => cityList.cityId === medicalCenter.cityId
+          );
+          if (cityFound) adapded.cityName = cityFound.cityName;
+          console.log(
+            "adapted.MedicalCenter:", adapded, estadoFound, cityFound
+          );
+          setMedicalCenter({ ...adapded });
         }
       }
     });
@@ -91,20 +95,27 @@ const LoginMedicalCenter = (props: { isVisible: boolean }) => {
       ...medicalCenter,
       [e.target.name]: e.target.value,
     });
-    if ((await e.target.name) === "id")
-      await setIsOkMedicalCenter(String(e.target.value).length >= 6);
-    if ((await isOkMedicalCenter) && isNewMedicalCenter > 0)
-      await refreshMedicalCenters();
+    if ((await e.target.name) === "id") {
+      isOkMedicalCenter = String(e.target.value).length >= 6;
+      if (isOkMedicalCenter) await refreshMedicalCenters(e.target.value);
+    }
   };
 
   const handleBlur = async (e: any) => {
-    if (await isOkMedicalCenter) await refreshMedicalCenters();
-    if (isNewMedicalCenter)
+    isOkMedicalCenter = String(e.target.value).length >= 6;
+    if (isOkMedicalCenter) await refreshMedicalCenters(e.target.value);
+    else setLastMedicalCenter(0);
+    console.log(
+      "handleBlur:",
+      lastMedicalCenter,
+      medicalCenter,
+      isOkMedicalCenter
+    );
+    if ((await lastMedicalCenter) === 0)
       await setMedicalCenter({
         ...initialState,
         id: parseInt(e.target.value),
       });
-    console.log("handleBlur:", isNewMedicalCenter, medicalCenter);
   };
 
   return (
@@ -117,13 +128,13 @@ const LoginMedicalCenter = (props: { isVisible: boolean }) => {
           <input
             type="number"
             placeholder="Nit Centro Médico"
-            required={true}
+            required={props.isVisible}
             id="medicalCenter"
             name={"id"}
             onBlur={handleBlur}
             onChange={handleChange}
           />
-          {isNewMedicalCenter === 0 ? (
+          {lastMedicalCenter === 0 ? (
             <>
               <input
                 type="text"
