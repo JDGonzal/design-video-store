@@ -4,8 +4,8 @@ import { BannerAlertInterface } from '@/models';
 const initialState: BannerAlertInterface = {
   title: '',
   message: '',
-  textColor: '',
-  background: '',
+  textColor: 'text-blue-700',
+  background: 'bg-blue-100',
   timeout: 0,
   isVisible: false,
 };
