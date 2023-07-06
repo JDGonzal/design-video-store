@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
-import { Header } from "@/components";
+import { BannerAlert, Header } from "@/components";
 import { LoginEmail, LoginMedicalCenter, LoginPassword } from "./components";
 import { AppStore } from "@/redux";
 
@@ -19,6 +19,7 @@ function Login() {
   return (
     <div>
       <Header />
+      <BannerAlert/> 
       <div className=" flex items-center justify-between gap-2">
         <div className="w-[5vh] md:w-[20vh] lg:w-[25vh] h-full"></div>
         <form

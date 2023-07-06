@@ -773,8 +773,7 @@ export interface MedicalCenterInterface{
 ```
 
 ## 9. The Medical Center Component adding data from the API 
-### This API added here in the future will be moved to the other Component. T
-his is for fast test used.
+### This API added here in the future will be moved to the other Component. This is for fast test used.
 
 1 Create two files ".env", you could based on this [Generic dotenv Format](https://hexdocs.pm/dotenvy/dotenv-file-format.html), or in our case using the [React Custom Environment Variables](https://create-react-app.dev/docs/adding-custom-environment-variables/). Put both files in the root, even before the "src" directory
 
@@ -838,3 +837,172 @@ const isFirstTime = useRef(true);
   }, [dispatch, medicalCenter, props.isVisible, isOkMedicalCenter]);
 ```
 10. In the future complete the Fields based on the API answer and let to select the `state`(Departamento) and the `city`(Ciudad), verify the Password and the UserType (Clínica, Laboratorio, Administrador).
+
+## 10. Lets to apply some Clean Architecture
+
+1. Changing the way to start or run the application in the`"scripts"` of "package.json" file:
+```JSON
+ "scripts": {
+    "local": "vite",
+    "staging": "vite --mode staging",
+    "dev": "vite --mode dev",
+    "prod": "vite --mode prod",
+    ...}
+```
+
+### Note: For this changes the files ".env" files in the root, must call ".env.dev" and ".env.prod".
+
+2. Move the `fetch` process form "Login-MedicalCenter.tsx" component to a new "api-service" directory into the file called: "medicalCenter.service.ts" :
+```javascript
+import { VITE_API_URL } from "@/utilities";
+const site = 'medicalcenter';
+export const getMedicalCenter = async (id: number) => {
+  const apiUrl = await `${VITE_API_URL}${site}/medicalcentername/${id}`;
+  if (await !isNaN(id)) {
+    let response: any = {};
+    try { console.log('getMedicalCenter:', apiUrl);
+      const result = await fetch(apiUrl, {
+        method: "GET",
+        headers: { Accept: "application/json",
+          "Content-Type": "application/json", }, });
+      response = await result.json();
+    } catch (err) { console.log(err);
+      return err; }
+    return response;
+  }
+}
+```
+3. Add an `adapter` in "adapters" directry, called "medicalCenter.adapter.ts", like this:
+```javascript
+import { MedicalCenterInterface } from "@/models";
+export const createMedicalCenterAdapter = (data: any): MedicalCenterInterface => ({
+  id: 0,
+  ok: data.ok,
+  found: data.found, nh
+  name: data.medicalCenterName,
+  address: data.medicalCenterAddress,
+  phone: data.medicalCenterTelNumber,
+  stateId: data.StateStateId,
+  stateName: '',
+  cityId: data.CityCityId,
+  cityName: '',
+});
+````
+4. Change again the "medical-center.model.ts" file:
+```javascript
+export interface MedicalCenterInterface{
+  id:         number;
+  ok:         boolean;
+  found:      number;
+  name:       string;
+  address:    string;
+  phone:      number;
+  stateId:    number;
+  stateName:  string;
+  cityId:     number;
+  cityName:   string;
+}
+```
+5. Changes in the "Login-MedicalCenter.tsx" component are in the `refreshMedicalCenters` method, the first part is the use of the `getMedicalCenter` service and the `adapter`:
+```javascript
+const refreshMedicalCenters = async () => {
+    await setIsNewMedicalCenter(0);
+    await getMedicalCenter(medicalCenter.id).then((data: any) => {
+      console.log("data:", data);
+      if (data && data.ok) {
+        const adapded = createMedicalCenterAdapter(data);
+        adapded["id"] = medicalCenter.id;
+        setMedicalCenter({ ...adapded });
+        setIsNewMedicalCenter(data.found);
+      }
+```
+6. Next in `refreshMedicalCenters` method, is the error control, using a new component called "BannerAlert.tsx" (Using somethig better than an simple `alert`)
+```javascript
+      if (data === undefined) {
+        console.log("undefined");
+      } else {
+        if (!data.ok) {
+          dispatch( createAlert({ title: "Error",
+              message:
+                "Se ha presentado una falla.\nPor favor avisarle al administrador",
+              textColor: "text-color-500", background: "bg-yellow-300",
+              timeout: 5000, isVisible: true,
+            }) );
+        } }
+    }) };
+```
+7. Add a Model called "banner-alert.model.ts" file:
+```javascript
+export interface BannerAlertInterface{
+  title: string;
+  message: string;
+  textColor: string;
+  background: string;
+  timeout: number;
+  isVisible:boolean;
+}
+```
+8. Add a new `slice` to control elements of the new "BannerAlert" component, called "bannerAlerSlice.ts":
+```javascript
+import { createSlice } from '@reduxjs/toolkit';
+import { BannerAlertInterface } from '@/models';
+const initialState: BannerAlertInterface = {
+  title: '', message: '',
+  textColor: '', background: '',
+  timeout: 0, isVisible: false,
+};
+export const bannerAlertSlice = createSlice({
+  name: 'bannerAlert',
+  initialState: initialState,
+  reducers: {
+    createAlert: (_state, action) => action.payload,
+    modifyAlert: (state, action) => ({ ...state, ...action.payload }),
+    resetAlert: () => initialState,
+  }
+});
+export const { createAlert, modifyAlert, resetAlert } = bannerAlertSlice.actions;
+export default bannerAlertSlice.reducer;
+```
+9. Add the new `slice` to the "store.ts" file:
+```javascript
+export interface AppStore {
+  validations: ValidationInterface[];
+  bannerAlert: BannerAlertInterface;
+}
+export default configureStore<AppStore>({
+  reducer: {
+    validations: validationsSlice.reducer,
+    bannerAlert: bannerAlertSlice.reducer,
+  }
+});
+```
+10. Create a Component in the "src/components" directory, called "BannerAlert.tsx" with this simple data:
+```javascript
+import { AppStore, resetAlert } from "@/redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+function BannerAlert() {
+  const bannerAlert = useSelector((state: AppStore) => state.bannerAlert);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const timer = setTimeout(() =>{ dispatch(resetAlert());}, bannerAlert.timeout);
+    return()=>clearTimeout(timer);
+  }, [bannerAlert, dispatch]);
+
+  return (
+    <div
+      className={`${bannerAlert.background} bordermedicalCenter.data-t border-b border-blue-500 ${bannerAlert.textColor} px-4 py-3 fixed 
+      ${bannerAlert.isVisible ? "left-0" : "-left-full"}`} role="alert"
+    >
+      <div className="justify-between flex">
+        <p className="font-bold">{bannerAlert.title}</p>
+        <button onClick={() => dispatch(resetAlert())}>X</button>
+      </div>
+      <p className="text-sm">{bannerAlert.message}</p>
+    </div>
+  );
+}
+
+export default BannerAlert;
+```
+11. Improvement: The Banner-Alert, only must show in real fail, pending for solution.
