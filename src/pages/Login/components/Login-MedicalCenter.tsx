@@ -1,9 +1,11 @@
-import { addValidation, updateValidation } from "@/redux";
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { addValidation, createAlert, updateValidation } from "@/redux";
 import { useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
-import { MedicalCenterInterface } from "@/models/medical-center.model";
-import { ValidationType } from "@/models";
-import { VITE_API_URL } from "@/utilities";
+import { ValidationType, MedicalCenterInterface } from "@/models";
+import { getMedicalCenter } from "@/api-services";
+import { createMedicalCenterAdapter } from "@/adapters";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const LoginMedicalCenter = (props: { isVisible: boolean }) => {
@@ -13,11 +15,13 @@ const LoginMedicalCenter = (props: { isVisible: boolean }) => {
     id: 0,
     ok: false,
     found: 0,
-    medicalCenterName: "",
-    medicalCenterAddress: "",
-    medicalCenterTelNumber: 0,
-    StateStateId: 0,
-    CityCityId: 0,
+    name: "",
+    address: "",
+    phone: 0,
+    stateId: 0,
+    stateName: "",
+    cityId: 0,
+    cityName: "",
   };
 
   const [medicalCenter, setMedicalCenter] = useState(initialState);
@@ -48,56 +52,58 @@ const LoginMedicalCenter = (props: { isVisible: boolean }) => {
         })
       );
     }
-  }, [dispatch, medicalCenter, props.isVisible, isOkMedicalCenter]);
+  }, [dispatch, medicalCenter, props.isVisible]);
 
-  const siteMedicalCenter = "medicalcenter";
-
-  const refreshMedicalCenters = () => {
-    const apiUrl = `${VITE_API_URL}${siteMedicalCenter}/medicalcentername/${medicalCenter.id}`;
-    console.log(apiUrl);
-    let dataMedicalCenter: MedicalCenterInterface = medicalCenter;
-    fetch(apiUrl, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then(
-        (data) => {
-          console.log(data.found, data);
-          setIsNewMedicalCenter(data.found as number),
-            (dataMedicalCenter = data as MedicalCenterInterface);
-          setMedicalCenter({
-            ...medicalCenter,
-            ok: dataMedicalCenter.ok,
-            found: dataMedicalCenter.found,
-            medicalCenterName: dataMedicalCenter.medicalCenterName,
-            medicalCenterAddress: dataMedicalCenter.medicalCenterAddress,
-            medicalCenterTelNumber: dataMedicalCenter.medicalCenterTelNumber,
-            StateStateId: dataMedicalCenter.StateStateId,
-            CityCityId: dataMedicalCenter.CityCityId,
-          });
-        },
-        (error) => {
-          console.log(error);
+  const refreshMedicalCenters = async () => {
+    await setIsNewMedicalCenter(0);
+    await getMedicalCenter(medicalCenter.id).then((data: any) => {
+      console.log("data:", data);
+      if (data && data.ok) {
+        const adapded = createMedicalCenterAdapter(data);
+        adapded["id"] = medicalCenter.id;
+        console.log("adapted", adapded);
+        setMedicalCenter({ ...adapded });
+        setIsNewMedicalCenter(data.found);
+      }
+      if (data === undefined) {
+        console.log("undefined");
+      } else {
+        if (!data.ok) {
+          dispatch(
+            createAlert({
+              title: "Error",
+              message:
+                "Se ha presentado una falla.\nPor favor avisarle al administrador",
+              textColor: "text-color-500",
+              background: "bg-yellow-300",
+              timeout: 5000,
+              isVisible: true,
+            })
+          );
         }
-      );
-  };
-
-  const handleChange = (e: any) => {
-    setMedicalCenter({
-      ...medicalCenter,
-      id: parseInt(e.target.value),
+      }
     });
-    setIsOkMedicalCenter(String(e.target.value).length >= 6);
-
-    if (isOkMedicalCenter) refreshMedicalCenters();
   };
 
-  const handleBlur = (e: any) => {
-    if (isOkMedicalCenter) refreshMedicalCenters();
+  const handleChange = async (e: any) => {
+    console.log(e.target.name);
+    await setMedicalCenter({
+      ...medicalCenter,
+      [e.target.name]: e.target.value,
+    });
+    if ((await e.target.name) === "id")
+      await setIsOkMedicalCenter(String(e.target.value).length >= 6);
+    if ((await isOkMedicalCenter) && isNewMedicalCenter > 0)
+      await refreshMedicalCenters();
+  };
+
+  const handleBlur = async (e: any) => {
+    if (await isOkMedicalCenter) await refreshMedicalCenters();
+    if (isNewMedicalCenter)
+      await setMedicalCenter({
+        ...initialState,
+        id: parseInt(e.target.value),
+      });
     console.log("handleBlur:", isNewMedicalCenter, medicalCenter);
   };
 
@@ -113,17 +119,71 @@ const LoginMedicalCenter = (props: { isVisible: boolean }) => {
             placeholder="Nit Centro Médico"
             required={true}
             id="medicalCenter"
-            name="medicalCenter"
+            name={"id"}
             onBlur={handleBlur}
             onChange={handleChange}
           />
-          <input type="text" placeholder="Nombre Centro Médico" value={medicalCenter.medicalCenterName} />
-          <input type="text" placeholder="Dirección Centro Médico" value={medicalCenter.medicalCenterAddress}/>
-          <input type="number" placeholder="Teléfono Centro Médico" value={medicalCenter.medicalCenterTelNumber}/>
-          <div className="flex flex-col-2 gap-1">
-            <input type="text" className="w-[50%]" placeholder="Departamento" />
-            <input type="text" className="w-[50%]" placeholder="Municipio" />
-          </div>
+          {isNewMedicalCenter === 0 ? (
+            <>
+              <input
+                type="text"
+                placeholder="Nombre Centro Médico"
+                value={medicalCenter.name}
+                onChange={handleChange}
+                name={"name"}
+              />
+              <input
+                type="text"
+                placeholder="Dirección Centro Médico"
+                value={medicalCenter.address}
+                onChange={handleChange}
+                name={"address"}
+              />
+              <input
+                type="number"
+                placeholder="Teléfono Centro Médico"
+                value={medicalCenter.phone}
+                onChange={handleChange}
+                name={"phone"}
+              />
+              <div className="flex flex-col-2 gap-1">
+                <input
+                  type="text"
+                  className="w-[50%]"
+                  placeholder="Departamento"
+                  value={medicalCenter.stateName}
+                  onChange={handleChange}
+                />
+                <input
+                  type="text"
+                  className="w-[50%]"
+                  placeholder="Municipio"
+                  value={medicalCenter.cityName}
+                  onChange={handleChange}
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <input type="text" value={medicalCenter.name} readOnly />
+              <input type="text" value={medicalCenter.address} readOnly />
+              <input type="number" value={medicalCenter.phone} readOnly />
+              <div className="flex flex-col-2 gap-1">
+                <input
+                  type="text"
+                  className="w-[50%]"
+                  value={medicalCenter.stateName}
+                  readOnly
+                />
+                <input
+                  type="text"
+                  className="w-[50%]"
+                  value={medicalCenter.cityName}
+                  readOnly
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
