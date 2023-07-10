@@ -1,6 +1,6 @@
 import { BannerAlertInterface } from "@/models";
 
-export   const alertError: BannerAlertInterface = {
+export   const alertErrorUtility: BannerAlertInterface = {
   title: "Error",
   message: "Se ha presentado una falla.\nPor favor avisarle al administrador",
   textColor: "text-blue-700",
