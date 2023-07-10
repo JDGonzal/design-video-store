@@ -7,7 +7,7 @@ export const getCities = async (estadoId:number) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let response: any = {};
     try {
-      console.log('getCities:', apiUrl);
+      // console.log('getCities:', apiUrl);
       const result = await fetch(apiUrl, {
         method: "GET",
         headers: {

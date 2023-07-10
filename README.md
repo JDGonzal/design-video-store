@@ -1005,7 +1005,8 @@ function BannerAlert() {
 
 export default BannerAlert;
 ```
-11. Improvement: The Banner-Alert, only must show in real fail, pending for solution.
+~~11. Improvement: The Banner-Alert, only must show in real fail, pending for solution.~~
+(Just Put the Error detection at first in the Method.)
 
 ## 11. For Login-MedicalCenter.tsx to show the "Departamento" and "Municipio"
 
@@ -1021,3 +1022,154 @@ export default BannerAlert;
 7. Changes in `refreshMedicalCenters` method.
 8. Adding a `useEffect` in "Login.tsx" file.
 9. This `useEffect` will fill the Estados and Cities.
+
+## 12. Control of the "Departamento" and "Ciudad" if the Medical Center is New
+
+1. Add an Utility, to control all the data from UI by `<Input>` or `<select>`, to get the value or `number` or `string`, called "valueType.utility.ts".
+2. Add a new component called "FeedTables.tsx" just to complete the data of `estadosList` and `citiesList`, use that in "App.tsx" file.
+3. Move all data for creation of List based on "Cities" and "States" from "Login.tsx" to the new "FeedTables.tsx".
+4. The Estado Model get a big change to put before the array the data I can search:
+```javascript
+export interface EstadoInterface{
+  estadoId:    number;
+  estadoName:  string;
+  estadosList: EstadosListInterface[];
+}
+export interface EstadosListInterface{
+    estadoId:    number;
+    estadoName:  string;
+}
+```
+5. Same situation for the City Model, the change to show the data I can search:
+```javascript
+export interface CityInterface{
+  cityId:     number;
+  cityName:   string;
+  estadoId:   number;
+  citiesList: CitiesListInterface[]; 
+}
+export interface CitiesListInterface{
+  cityId:     number;
+  cityName:   string;
+  estadoId:   number;
+}
+```
+6. For `adapters` just to add the type of each origin value.
+7. Adding all the elements to show when the user is new, as "Departamento" (State) and "Municipio" (City):
+```javascript
+      <div className="flex flex-col-2 gap-1">
+        <select
+          className="w-[50%] form-select" placeholder="Departamento"
+          value={medicalCenter.stateId} name={"stateId"}
+          onChange={handleChange} onBlur={handleBlur}
+        >
+          <option hidden defaultValue="0" key="0">
+            Departamento
+          </option>
+          {estadosList.estadosList.map((estado) => (
+            <option value={estado.estadoId} key={estado.estadoId}>
+              {estado.estadoName}
+            </option>
+          ))}
+        </select>
+        <select
+          className="w-[50%]" placeholder="Municipio"
+          value={medicalCenter.cityId} name={"cityId"}
+          onChange={handleChange} onBlur={handleBlur}
+        >
+          <option hidden defaultValue="0" key="0">
+            Municipio
+          </option>
+          {citiesList.citiesList.map((city) =>
+            city.estadoId === medicalCenter.stateId ? (
+              <option value={city.cityId} key={city.cityId}>
+                {city.cityName}
+              </option> ) : ( false )
+          )}
+        </select>
+      </div>
+```
+8. The `handleChange` method, let to manage all fields, no matther the type:
+```javascript
+  const handleChange = async (e: any) => {
+    console.log(e.target.name, e.target.type);
+    setMedicalCenter({
+      ...medicalCenter,
+      [e.target.name]: valueTypeUtility(e.target.value,e.target.type),
+    });
+    if ((await e.target.name) === "id") {
+      isOkMedicalCenter = String(e.target.value).length >= 6;
+      if (isOkMedicalCenter) await refreshMedicalCenters(valueTypeUtility(e.target.value,e.target.type));
+    }
+  };
+```
+9. The `handleBlur` method, let to manage all field and doing some validation by `switch`:
+```javascript
+  const handleBlur = async (e: any) => {
+    isOkMedicalCenter = String(e.target.value).length >= 6;
+    switch (await e.target.name) {
+      case "id":
+        if (isOkMedicalCenter) await refreshMedicalCenters(valueTypeUtility(e.target.value,e.target.type)); else setLastMedicalCenter(0);
+        break;
+      case "stateId":
+        dispatch(getMainEstado(valueTypeUtility(e.target.value,e.target.type)));
+        setMedicalCenter({
+          ...medicalCenter,
+           stateName: estadosList.estadoName,
+        });
+        break;
+      case "cityId":
+        dispatch(getMainCity(valueTypeUtility(e.target.value,e.target.type)));
+        setMedicalCenter({
+          ...medicalCenter,
+           cityName: citiesList.cityName,
+        });
+        break;
+      default:
+        console.log("end");
+        break;
+    }
+  };
+```
+10. The Estados Slice, changes based on the new model and adding two new `reducers`, called: `setMainEstado`, and `getMainEstado`:
+```javascript
+  ...
+  reducers: {
+    ...
+    setMainEstado:( state, action) =>{
+      const { estadoId, estadoName } = action.payload;
+      state.estadoId = estadoId;
+      state.estadoName = estadoName;
+    },
+    getMainEstado: (state, action) =>{
+      const estadoId = action.payload;
+      const estadoFound = state.estadosList.find(estadoList => estadoList.estadoId === estadoId);
+      if (estadoFound) {
+      state.estadoId = estadoFound.estadoId;
+      state.estadoName = estadoFound.estadoName;
+      }
+    },
+  }
+```
+11. The same for Cities Slice, after the model change and the new reducers:
+```javascript
+  ...
+  reducers: {
+    ...
+    setMainCity:( state, action) =>{
+      const { cityId, cityName, estadoId } = action.payload;
+      state.cityId = cityId;
+      state.cityName = cityName;
+      state.estadoId = estadoId;
+    },
+    getMainCity: (state, action) =>{
+      const cityId = action.payload;
+      const cityFound = state.citiesList.find(cityList => cityList.cityId === cityId);
+      if (cityFound) {
+      state.cityId = cityFound.cityId;
+      state.cityName = cityFound.cityName;
+      state.estadoId = cityFound.estadoId;
+      }
+    },
+  }
+```

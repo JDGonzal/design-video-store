@@ -4,6 +4,8 @@ import {
   AppStore,
   addValidation,
   createAlert,
+  getMainCity,
+  getMainEstado,
   updateValidation,
 } from "@/redux";
 import { useEffect, useState, useRef } from "react";
@@ -11,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ValidationType, MedicalCenterInterface } from "@/models";
 import { getMedicalCenter } from "@/api-services";
 import { createMedicalCenterAdapter } from "@/adapters";
-import { alertError } from "@/utilities";
+import { alertErrorUtility, valueTypeUtility } from "@/utilities";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const LoginMedicalCenter = (props: { isVisible: boolean }) => {
@@ -64,25 +66,15 @@ const LoginMedicalCenter = (props: { isVisible: boolean }) => {
 
   const refreshMedicalCenters = async (id: number) => {
     await getMedicalCenter(id).then(async (data: any) => {
-      if (await !data) {
-        await dispatch(createAlert(alertError));
+      if (!data) {
+        dispatch(createAlert(alertErrorUtility));
       } else {
-        await console.log("data:", data);
-        if ((await data) && data.ok) {
-          await setLastMedicalCenter(data.found);
-          const adapded: any = await createMedicalCenterAdapter(data);
-          adapded["id"] = await id;
-          const estadoFound = estadosList.find(
-            (estadoList) => estadoList.estadoId === medicalCenter.stateId
-          );
-          if (estadoFound) adapded.stateName = estadoFound.estadoName;
-          const cityFound = await citiesList.find(
-            (cityList) => cityList.cityId === medicalCenter.cityId
-          );
-          if (cityFound) adapded.cityName = cityFound.cityName;
-          console.log(
-            "adapted.MedicalCenter:", adapded, estadoFound, cityFound
-          );
+        console.log("data:", data);
+        if (await data && data.ok && data.found >0) {
+          setLastMedicalCenter(data.found);
+          const adapded: any = createMedicalCenterAdapter(data);
+          adapded["id"] = id;
+          console.log("adapted.MedicalCenter:", adapded);
           setMedicalCenter({ ...adapded });
         }
       }
@@ -90,32 +82,42 @@ const LoginMedicalCenter = (props: { isVisible: boolean }) => {
   };
 
   const handleChange = async (e: any) => {
-    console.log(e.target.name);
-    await setMedicalCenter({
+    console.log(e.target.name, e.target.type);
+    setMedicalCenter({
       ...medicalCenter,
-      [e.target.name]: e.target.value,
+      [e.target.name]: valueTypeUtility(e.target.value,e.target.type),
     });
     if ((await e.target.name) === "id") {
       isOkMedicalCenter = String(e.target.value).length >= 6;
-      if (isOkMedicalCenter) await refreshMedicalCenters(e.target.value);
+      if (isOkMedicalCenter) await refreshMedicalCenters(valueTypeUtility(e.target.value,e.target.type));
     }
   };
 
   const handleBlur = async (e: any) => {
     isOkMedicalCenter = String(e.target.value).length >= 6;
-    if (isOkMedicalCenter) await refreshMedicalCenters(e.target.value);
-    else setLastMedicalCenter(0);
-    console.log(
-      "handleBlur:",
-      lastMedicalCenter,
-      medicalCenter,
-      isOkMedicalCenter
-    );
-    if ((await lastMedicalCenter) === 0)
-      await setMedicalCenter({
-        ...initialState,
-        id: parseInt(e.target.value),
-      });
+    switch (await e.target.name) {
+      case "id":
+        if (isOkMedicalCenter) await refreshMedicalCenters(valueTypeUtility(e.target.value,e.target.type));
+        else setLastMedicalCenter(0);
+        break;
+      case "stateId":
+        dispatch(getMainEstado(valueTypeUtility(e.target.value,e.target.type)));
+        setMedicalCenter({
+          ...medicalCenter,
+           stateName: estadosList.estadoName,
+        });
+        break;
+      case "cityId":
+        dispatch(getMainCity(valueTypeUtility(e.target.value,e.target.type)));
+        setMedicalCenter({
+          ...medicalCenter,
+           cityName: citiesList.cityName,
+        });
+        break;
+      default:
+        console.log("end");
+        break;
+    }
   };
 
   return (
@@ -131,8 +133,8 @@ const LoginMedicalCenter = (props: { isVisible: boolean }) => {
             required={props.isVisible}
             id="medicalCenter"
             name={"id"}
-            onBlur={handleBlur}
             onChange={handleChange}
+            onBlur={handleBlur}
           />
           {lastMedicalCenter === 0 ? (
             <>
@@ -140,38 +142,65 @@ const LoginMedicalCenter = (props: { isVisible: boolean }) => {
                 type="text"
                 placeholder="Nombre Centro Médico"
                 value={medicalCenter.name}
-                onChange={handleChange}
                 name={"name"}
+                onChange={handleChange}
+                onBlur={handleBlur}
               />
               <input
                 type="text"
                 placeholder="Dirección Centro Médico"
                 value={medicalCenter.address}
-                onChange={handleChange}
                 name={"address"}
+                onChange={handleChange}
+                onBlur={handleBlur}
               />
               <input
                 type="number"
                 placeholder="Teléfono Centro Médico"
                 value={medicalCenter.phone}
-                onChange={handleChange}
                 name={"phone"}
+                onChange={handleChange}
+                onBlur={handleBlur}
               />
               <div className="flex flex-col-2 gap-1">
-                <input
-                  type="text"
-                  className="w-[50%]"
+                <select
+                  className="w-[50%] form-select"
                   placeholder="Departamento"
-                  value={medicalCenter.stateName}
+                  value={medicalCenter.stateId}
+                  name={"stateId"}
                   onChange={handleChange}
-                />
-                <input
-                  type="text"
+                  onBlur={handleBlur}
+                >
+                  <option hidden defaultValue="0" key="0">
+                    Departamento
+                  </option>
+                  {estadosList.estadosList.map((estado) => (
+                    <option value={estado.estadoId} key={estado.estadoId}>
+                      {estado.estadoName}
+                    </option>
+                  ))}
+                </select>
+                <select
                   className="w-[50%]"
                   placeholder="Municipio"
-                  value={medicalCenter.cityName}
+                  value={medicalCenter.cityId}
+                  name={"cityId"}
                   onChange={handleChange}
-                />
+                  onBlur={handleBlur}
+                >
+                  <option hidden defaultValue="0" key="0">
+                    Municipio
+                  </option>
+                  {citiesList.citiesList.map((city) =>
+                    city.estadoId === medicalCenter.stateId ? (
+                      <option value={city.cityId} key={city.cityId}>
+                        {city.cityName}
+                      </option>
+                    ) : (
+                      false
+                    )
+                  )}
+                </select>
               </div>
             </>
           ) : (

@@ -6,8 +6,8 @@ import { BannerAlertInterface, EstadoInterface, ValidationInterface, CityInterfa
 export interface AppStore {
   validations: ValidationInterface[];
   bannerAlert: BannerAlertInterface;
-  estadosList: EstadoInterface[];
-  citiesList: CityInterface[];
+  estadosList: EstadoInterface;
+  citiesList: CityInterface;
 }
 
 export default configureStore<AppStore>({

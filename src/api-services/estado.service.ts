@@ -7,7 +7,7 @@ export const getStates = async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let response: any = {};
     try {
-      console.log('getStates:', apiUrl);
+      // console.log('getStates:', apiUrl);
       const result = await fetch(apiUrl, {
         method: "GET",
         headers: {
