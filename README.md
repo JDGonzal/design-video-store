@@ -1173,3 +1173,74 @@ export interface CitiesListInterface{
     },
   }
 ```
+## 13. Change the "isVisible" as a props, to a "rxjs" manager.
+
+1. Install the `rxjs` from the [Installation Instructions](https://rxjs.dev/guide/installation)
+```Mathematica
+pnpm install rxjs @reactivex/rxjs
+```
+2. Check the Example in [Sharing between components](https://marclloyd.co.uk/uncategorized/sharing-data-between-reactjs-components-with-rxjs/)
+3. Create a Service called "data-shared.service.ts" file:
+```javascript
+    const subject = new Subject();
+    export const dataSharedService = {
+      setDataShared: (value: any) => subject.next(value),
+      clearDataShared: () => subject.next(null),
+      getDataShared: () => subject.asObservable()
+    };
+```
+4. The component to set or feed the data is "Login.tsx", like this, remember `showRegistry` has a `useState`:
+```javascript
+    useEffect(() => {
+      dataSharedService.setDataShared(showRegistry);
+    }, [showRegistry]);
+```
+5. The other componets get the info based on `suscribe`:
+```javascript
+    useEffect(() => {
+      dataSharedService.getDataShared().subscribe( data =>{
+        if(data!==null)setIsVisible(data as boolean);
+      });
+```
+6. Eliminate the `props` and change by `useState`, like this:
+```javascript
+  const LoginMedicalCenter = () => {
+    ...
+    const [isVisible, setIsVisible] = useState(false);
+```
+7. I don't do the same for the other components `LoginEmail` and `LoginPassword`,  because the `isVisible` is always true, then I keep de `props`.
+
+## 14. Using the "rxjs" package dividing the big Login-MedicalCenter Component
+
+1. Create a "Login-MedicalCenter-id.tsx" file and move all regarding from "Login-MedicalCenter.tsx" Component.
+2. Create a "Login-MedicalCenter-StateNCity.tsx" file and move all regarding from "Login-MedicalCenter.tsx" Component.
+3. Create a "medicalCenter.service.ts" file and use the `rxjs` package:
+```javascript
+    import { MedicalCenterInitial, MedicalCenterInterface } from '@/models';
+    import { Subject } from 'rxjs';
+    const subject = new Subject();
+    export const medicalCenterService = {
+        setMedicalCenter: (value: MedicalCenterInterface) => subject.next(value),
+        clearMedicalCenter: () => subject.next(MedicalCenterInitial),
+        getMedicalCenter: () => subject.asObservable()
+    };
+```
+4. all the Components get and set the new `rxjs` value, in the `useEffect` hook:
+```javascript
+    medicalCenterService.getMedicalCenter().subscribe((data) => {
+      if (data) setMedicalCenter(data as MedicalCenterInterface);
+    });
+    ...
+    medicalCenterService.setMedicalCenter(medicalCenter);
+```
+5. Before the normal `setMedicalCenter` from `useState` hook, call the `medicalCenterService.getMedicalCenter()`.
+6. in the "Login-MedicalCenter-Id.tsx" file for the `refreshMedicalCenters` method, add to complete the `stateName` and `cityName`, options:
+```javascript
+          if (adapted.cityId > 0 && adapted.stateId > 0) {
+            dispatch(getMainEstado(adapted.stateId));
+            adapted['stateName']= estadosList.estadoName;
+            dispatch(getMainCity(adapted.cityId));
+            adapted['cityName']= citiesList.cityName;
+          }
+```
+7. Some improvements in the "medicalCenter.adapter.ts" to validate each field or return a default value.

@@ -1,14 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
+import { useSelector } from "react-redux";
 import { BannerAlert, Header } from "@/components";
 import { LoginEmail, LoginMedicalCenter, LoginPassword } from "./components";
+import { dataSharedService } from "@/services";
+import { AppStore } from "@/redux";
 
 function Login() {
   const [showRegistry, setShowRegistry] = useState(false);
+  const validations = useSelector((state: AppStore) => state.validations);
+
+  useEffect(() => {
+    dataSharedService.setDataShared(showRegistry);
+  }, [showRegistry]);
 
   const handleSubmit = (e: any) => {
     e.preventDefault(); // Avoid page refreshing.
+    console.log('Validations:', validations);
   };
 
   return (
@@ -25,7 +34,7 @@ function Login() {
             {showRegistry ? "Registro" : "Inicio Sesión"}
           </h4>
           <LoginEmail isVisible={true}/>
-          <LoginMedicalCenter isVisible={showRegistry}/>
+          <LoginMedicalCenter/>
           <LoginPassword isVisible={showRegistry}/>
           <div
             className={`${
