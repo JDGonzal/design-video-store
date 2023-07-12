@@ -1,4 +1,4 @@
-export interface BannerAlertInterface{
+export interface BannerAlertableInterface{
   title: string;
   message: string;
   textColor: string;

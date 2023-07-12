@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { MedicalCenterInitial, MedicalCenterInterface } from "@/models";
+import { MedicalCenterInitial, MedicalCenterableInterface } from "@/models";
 import { dataSharedService, medicalCenterService } from "@/services";
 import {
   AppStore,
@@ -25,9 +25,8 @@ function LoginMedicalCenterStateNCity() {
       if (data !== null) setIsVisible(data as boolean);
     });
     medicalCenterService.getMedicalCenter().subscribe((data) => {
-      setMedicalCenter(data as MedicalCenterInterface);
+      setMedicalCenter(data as MedicalCenterableInterface);
     });
-    console.log('LoginMedicalCenterStateNCity', medicalCenter.found);
     dispatch(
       updateValidation({
         id: "medicalCenter",
@@ -41,7 +40,7 @@ function LoginMedicalCenterStateNCity() {
 
   const handleChange = async (e: any) => {
     medicalCenterService.getMedicalCenter().subscribe((data) => {
-      setMedicalCenter(data as MedicalCenterInterface);
+      setMedicalCenter(data as MedicalCenterableInterface);
     });
     console.log(e.target.name, e.target.type);
     setMedicalCenter({
@@ -52,7 +51,7 @@ function LoginMedicalCenterStateNCity() {
 
   const handleBlur = async (e: any) => {
     medicalCenterService.getMedicalCenter().subscribe((data) => {
-      setMedicalCenter(data as MedicalCenterInterface);
+      setMedicalCenter(data as MedicalCenterableInterface);
     });
     switch (await e.target.name) {
       case "stateId":

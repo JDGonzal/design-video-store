@@ -1,10 +1,10 @@
-export interface EstadoInterface{
+export interface StatableInterface{
   estadoId:    number;
   estadoName:  string;
-  estadosList: EstadosListInterface[];
+  estadosList: StateListableInterface[];
 }
 
-export interface EstadosListInterface{
+export interface StateListableInterface{
     estadoId:    number;
     estadoName:  string;
 }

@@ -1,7 +1,11 @@
 import { addValidation, updateValidation } from "@/redux";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { useDispatch } from "react-redux";
-import { ValidationType, MedicalCenterInitial, MedicalCenterInterface } from "@/models";
+import {
+  ValidationType,
+  MedicalCenterInitial,
+  MedicalCenterableInterface,
+} from "@/models";
 import { valueTypeUtility } from "@/utilities";
 import { dataSharedService, medicalCenterService } from "@/services";
 import { LoginMedicalCenterId, LoginMedicalCenterStateNCity } from ".";
@@ -19,7 +23,7 @@ const LoginMedicalCenter = () => {
       if (data !== null) setIsVisible(data as boolean);
     });
     medicalCenterService.getMedicalCenter().subscribe((data) => {
-      if (data) setMedicalCenter(data as MedicalCenterInterface);
+      if (data) setMedicalCenter(data as MedicalCenterableInterface);
     });
     if (isFirstTime.current) {
       isFirstTime.current = false;
@@ -48,7 +52,7 @@ const LoginMedicalCenter = () => {
 
   const handleChange = async (e: any) => {
     medicalCenterService.getMedicalCenter().subscribe((data) => {
-      setMedicalCenter(data as MedicalCenterInterface);
+      setMedicalCenter(data as MedicalCenterableInterface);
     });
     console.log(e.target.name, e.target.type);
     setMedicalCenter({

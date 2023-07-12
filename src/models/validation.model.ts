@@ -1,4 +1,4 @@
-export interface ValidationInterface{
+export interface ValidationableInterface{
   id: string;
   value: string;
   type: ValidationType;

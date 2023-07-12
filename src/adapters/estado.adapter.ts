@@ -1,7 +1,7 @@
-import { EstadosListInterface } from "@/models";
+import { StateListableInterface } from "@/models";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const createEstadoAdapter = (data: any): EstadosListInterface => ({
+export const createEstadoAdapter = (data: any): StateListableInterface => ({
   estadoId: data.stateId as number,
   estadoName: data.stateName as string,
 });

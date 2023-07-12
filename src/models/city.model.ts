@@ -1,4 +1,4 @@
-export interface CityInterface{
+export interface CityableInterface{
   cityId:     number;
   cityName:   string;
   estadoId:   number;

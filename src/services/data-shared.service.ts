@@ -6,5 +6,6 @@ const subject = new Subject();
 export const dataSharedService = {
     setDataShared: (value: any) => subject.next(value),
     clearDataShared: () => subject.next(null),
-    getDataShared: () => subject.asObservable()
+    getDataShared: () => subject.asObservable(),
+    unsuscribe: () => subject.unsubscribe(),
 };

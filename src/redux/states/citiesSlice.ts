@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { CityInterface, CitiesListInterface } from '@/models';
+import { CityableInterface, CitiesListInterface } from '@/models';
 
 const citiesEmpty : CitiesListInterface[] =[];
-const initialState: CityInterface={
+const initialState: CityableInterface={
   cityId :0,
   cityName :'',
   estadoId:0,

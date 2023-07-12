@@ -571,7 +571,7 @@ pnpm install @reduxjs/toolkit react-redux
 2. Create a "models" directory in the root ("src/models").
 3. Add a "validation.model.ts" file wih this information:
 ```javascript
-export interface ValidationInterface{
+export interface ValidationableInterface{
   id: string;
   value: string;
   type: ValidationType;
@@ -593,8 +593,8 @@ export default configureStore({});
 5. Create a "states" directory into "redux" directory, and create the "validationsSlice.ts" file, with this inside:
 ```javascript
 import { createSlice } from '@reduxjs/toolkit';
-import { ValidationInterface } from '@/models';
-const initialState: ValidationInterface[] = [];
+import { ValidationableInterface } from '@/models';
+const initialState: ValidationableInterface[] = [];
 export const validationsSlice = createSlice({
   name: 'validation', initialState: initialState, 
   reducers:{ }
@@ -607,9 +607,9 @@ export default validationsSlice.reducer;
 ```javascript
 import { configureStore } from "@reduxjs/toolkit";
 import { validationsSlice } from "./states";
-import { ValidationInterface } from "@/models";
+import { ValidationableInterface } from "@/models";
 export interface AppStore {
-  validations: ValidationInterface[];
+  validations: ValidationableInterface[];
 }
 export default configureStore<AppStore>({
   reducer: {
@@ -744,7 +744,7 @@ const [email, setEmail] = useState("");
 4. Move all the Information from "Login.tsx" to "Login-Password.tsx" regarding the `MedicalCenter`.
 5. Create a Model called "medical-center.model.ts" with this structure (update the "intex.ts" or the barrel, after this one):
 ```javascript
-export interface MedicalCenterInterface{
+export interface MedicalCenterableInterface{
   id: number;
   name: string;
   address: string;
@@ -755,7 +755,7 @@ export interface MedicalCenterInterface{
 ```
 6. Because the Medical Center is a JSON, create a `initialValue`, to use in the `useState`:
 ```javascript
-  const initialState: MedicalCenterInterface = {
+  const initialState: MedicalCenterableInterface = {
     id: 0, name: "",
     address: "", telephone: 0,
     stateId: 0, cityId: 0,
@@ -794,7 +794,7 @@ const siteMedicalCenter = "medicalcenter";
 6 Create a function `refreshMedicalCenters()` to use the API information.
 7. Modify the "medical-center.model.ts" file based on the API answer:
 ```javascript
-export interface MedicalCenterInterface{
+export interface MedicalCenterableInterface{
   id:                     number;
   ok:                     boolean;
   found:                  number;
@@ -874,8 +874,8 @@ export const getMedicalCenter = async (id: number) => {
 ```
 3. Add an `adapter` in "adapters" directry, called "medicalCenter.adapter.ts", like this:
 ```javascript
-import { MedicalCenterInterface } from "@/models";
-export const createMedicalCenterAdapter = (data: any): MedicalCenterInterface => ({
+import { MedicalCenterableInterface } from "@/models";
+export const createMedicalCenterAdapter = (data: any): MedicalCenterableInterface => ({
   id: 0,
   ok: data.ok,
   found: data.found, nh
@@ -890,7 +890,7 @@ export const createMedicalCenterAdapter = (data: any): MedicalCenterInterface =>
 ```
 4. Change again the "medical-center.model.ts" file:
 ```javascript
-export interface MedicalCenterInterface{
+export interface MedicalCenterableInterface{
   id:         number;
   ok:         boolean;
   found:      number;
@@ -933,7 +933,7 @@ const refreshMedicalCenters = async () => {
 ```
 7. Add a Model called "banner-alert.model.ts" file:
 ```javascript
-export interface BannerAlertInterface{
+export interface BannerAlertableInterface{
   title: string;
   message: string;
   textColor: string;
@@ -945,8 +945,8 @@ export interface BannerAlertInterface{
 8. Add a new `slice` to control elements of the new "BannerAlert" component, called "bannerAlertSlice.ts":
 ```javascript
 import { createSlice } from '@reduxjs/toolkit';
-import { BannerAlertInterface } from '@/models';
-const initialState: BannerAlertInterface = {
+import { BannerAlertableInterface } from '@/models';
+const initialState: BannerAlertableInterface = {
   title: '', message: '',
   textColor: '', background: '',
   timeout: 0, isVisible: false,
@@ -966,8 +966,8 @@ export default bannerAlertSlice.reducer;
 9. Add the new `slice` to the "store.ts" file:
 ```javascript
 export interface AppStore {
-  validations: ValidationInterface[];
-  bannerAlert: BannerAlertInterface;
+  validations: ValidationableInterface[];
+  bannerAlert: BannerAlertableInterface;
 }
 export default configureStore<AppStore>({
   reducer: {
@@ -1030,19 +1030,19 @@ export default BannerAlert;
 3. Move all data for creation of List based on "Cities" and "States" from "Login.tsx" to the new "FeedTables.tsx".
 4. The Estado Model get a big change to put before the array the data I can search:
 ```javascript
-export interface EstadoInterface{
+export interface StatableInterface{
   estadoId:    number;
   estadoName:  string;
-  estadosList: EstadosListInterface[];
+  estadosList: StateListableInterface[];
 }
-export interface EstadosListInterface{
+export interface StateListableInterface{
     estadoId:    number;
     estadoName:  string;
 }
 ```
 5. Same situation for the City Model, the change to show the data I can search:
 ```javascript
-export interface CityInterface{
+export interface CityableInterface{
   cityId:     number;
   cityName:   string;
   estadoId:   number;
@@ -1216,11 +1216,11 @@ pnpm install rxjs @reactivex/rxjs
 2. Create a "Login-MedicalCenter-StateNCity.tsx" file and move all regarding from "Login-MedicalCenter.tsx" Component.
 3. Create a "medicalCenter.service.ts" file and use the `rxjs` package:
 ```javascript
-    import { MedicalCenterInitial, MedicalCenterInterface } from '@/models';
+    import { MedicalCenterInitial, MedicalCenterableInterface } from '@/models';
     import { Subject } from 'rxjs';
     const subject = new Subject();
     export const medicalCenterService = {
-        setMedicalCenter: (value: MedicalCenterInterface) => subject.next(value),
+        setMedicalCenter: (value: MedicalCenterableInterface) => subject.next(value),
         clearMedicalCenter: () => subject.next(MedicalCenterInitial),
         getMedicalCenter: () => subject.asObservable()
     };
@@ -1228,7 +1228,7 @@ pnpm install rxjs @reactivex/rxjs
 4. all the Components get and set the new `rxjs` value, in the `useEffect` hook:
 ```javascript
     medicalCenterService.getMedicalCenter().subscribe((data) => {
-      if (data) setMedicalCenter(data as MedicalCenterInterface);
+      if (data) setMedicalCenter(data as MedicalCenterableInterface);
     });
     ...
     medicalCenterService.setMedicalCenter(medicalCenter);

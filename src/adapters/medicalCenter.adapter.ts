@@ -1,7 +1,7 @@
-import { MedicalCenterInterface } from "@/models";
+import { MedicalCenterableInterface } from "@/models";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const createMedicalCenterAdapter = (data: any): MedicalCenterInterface => ({
+export const createMedicalCenterAdapter = (data: any): MedicalCenterableInterface => ({
   id: 0 as number | 0,
   ok: (data.ok) ? data.ok : false,
   found: (data.found) ? data.found : 0,
