@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { createMedicalCenterAdapter } from "@/adapters";
 import { getMedicalCenter } from "@/api-services";
-import { MedicalCenterInitial, MedicalCenterInterface } from "@/models";
+import { MedicalCenterInitial, MedicalCenterableInterface } from "@/models";
 import {
   AppStore,
   createAlert,
@@ -28,7 +28,7 @@ function LoginMedicalCenterId() {
       if (data !== null) setIsVisible(data as boolean);
     });
     medicalCenterService.getMedicalCenter().subscribe((data) => {
-      setMedicalCenter(data as MedicalCenterInterface);
+      setMedicalCenter(data as MedicalCenterableInterface);
     });
     dispatch(
       updateValidation({
@@ -44,7 +44,7 @@ function LoginMedicalCenterId() {
   const refreshMedicalCenters = async (id: number) => {
     await getMedicalCenter(id).then(async (data: any) => {
       medicalCenterService.getMedicalCenter().subscribe((data) => {
-        setMedicalCenter(data as MedicalCenterInterface);
+        setMedicalCenter(data as MedicalCenterableInterface);
       });
       if (!data) {
         dispatch(createAlert(alertErrorUtility));
@@ -54,9 +54,9 @@ function LoginMedicalCenterId() {
           adapted["id"] = id;
           if (adapted.cityId > 0 && adapted.stateId > 0) {
             dispatch(getMainEstado(adapted.stateId));
-            adapted['stateName']= estadosList.estadoName;
+            adapted["stateName"] = estadosList.estadoName;
             dispatch(getMainCity(adapted.cityId));
-            adapted['cityName']= citiesList.cityName;
+            adapted["cityName"] = citiesList.cityName;
           }
           setMedicalCenter({ ...adapted });
           console.log("getMedicalCenter.adapted:", medicalCenter);
@@ -67,7 +67,7 @@ function LoginMedicalCenterId() {
 
   const handleChange = async (e: any) => {
     medicalCenterService.getMedicalCenter().subscribe((data) => {
-      setMedicalCenter(data as MedicalCenterInterface);
+      setMedicalCenter(data as MedicalCenterableInterface);
     });
     const isOkMedicalCenter = String(e.target.value).length >= 6;
     setMedicalCenter({
@@ -84,7 +84,7 @@ function LoginMedicalCenterId() {
   const handleBlur = async (e: any) => {
     const isOkMedicalCenter = String(e.target.value).length >= 6;
     medicalCenterService.getMedicalCenter().subscribe((data) => {
-      setMedicalCenter(data as MedicalCenterInterface);
+      setMedicalCenter(data as MedicalCenterableInterface);
     });
     if (isOkMedicalCenter)
       await refreshMedicalCenters(

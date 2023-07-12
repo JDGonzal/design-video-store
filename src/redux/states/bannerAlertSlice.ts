@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { BannerAlertInterface } from '@/models';
+import { BannerAlertableInterface } from '@/models';
 
-const initialState: BannerAlertInterface = {
+const initialState: BannerAlertableInterface = {
   title: '',
   message: '',
   textColor: 'text-blue-700',
