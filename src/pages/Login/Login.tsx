@@ -3,8 +3,14 @@ import { useEffect, useState } from "react";
 
 import { useSelector } from "react-redux";
 import { BannerAlert, Header } from "@/components";
-import { LoginEmail, LoginMedicalCenter, LoginPassword } from "./components";
-import { dataSharedService } from "@/services";
+import {
+  LoginConfirmPassword,
+  LoginEmail,
+  LoginMedicalCenter,
+  LoginPassword,
+  LoginUserType,
+} from "./components";
+
 import { AppStore } from "@/redux";
 
 function Login() {
@@ -12,18 +18,18 @@ function Login() {
   const validations = useSelector((state: AppStore) => state.validations);
 
   useEffect(() => {
-    dataSharedService.setDataShared(showRegistry);
-  }, [showRegistry]);
+    console.log("Login.Once");
+  }, []);
 
   const handleSubmit = (e: any) => {
     e.preventDefault(); // Avoid page refreshing.
-    console.log('Validations:', validations);
+    console.log("Validations:", validations);
   };
 
   return (
     <div>
       <Header />
-      <BannerAlert/> 
+      <BannerAlert />
       <div className=" flex items-center justify-between gap-2">
         <div className="w-[5vh] md:w-[20vh] lg:w-[25vh] h-full"></div>
         <form
@@ -33,42 +39,13 @@ function Login() {
           <h4 className="mb-5 text-black text-2xl font-bold w-full">
             {showRegistry ? "Registro" : "Inicio Sesión"}
           </h4>
-          <LoginEmail isVisible={true}/>
-          <LoginMedicalCenter/>
-          <LoginPassword isVisible={showRegistry}/>
-          <div
-            className={`${
-              showRegistry ? "visible" : "hidden"
-            } flex flex-col gap-2 bg-slate-100 p-2 rounded-md mb-3`}
-          >
-            <label htmlFor="">Confirmar contraseña</label>
-            <input
-              className="rounded-md"
-              type="password"
-              placeholder="Confirmar contraseña"
-            />
+          <LoginEmail isVisible={true} />
+          <LoginMedicalCenter isVisible={showRegistry} />
+          <div className="flex flex-col gap-2 bg-slate-100 p-2 rounded-md mb-3 form-group required ">
+            <LoginPassword isVisible={showRegistry} />
+            <LoginConfirmPassword isVisible={showRegistry} />
           </div>
-
-          <div className={`${showRegistry ? "visible" : "hidden"}`}>
-            <div className="flex justify-between bg-slate-100 p-2 rounded-md mb-3 text-xs md:text-base">
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="clinic"
-                  className="accent-blue-600"
-                />
-                <label htmlFor="clinic">Clínica</label>
-              </div>
-              <div className="flex items-center gap-2">
-                <input type="checkbox" id="lab" className="accent-blue-600" />
-                <label htmlFor="lab">Laboratorio</label>
-              </div>
-              <div className="flex items-center gap-2">
-                <input type="checkbox" id="admin" className="accent-blue-600" />
-                <label htmlFor="admin">Administrador</label>
-              </div>
-            </div>
-          </div>
+          <LoginUserType isVisible={showRegistry}/>
           <div>
             <button
               type="submit"
@@ -81,7 +58,7 @@ function Login() {
           <div>
             <button
               className={`text-xs rounded-md px-2 py-1 ${
-                showRegistry ? "mt-5" : "mt-96"
+                showRegistry ? "mt-12" : "mt-96"
               }`}
               onClick={() => setShowRegistry(!showRegistry)}
             >

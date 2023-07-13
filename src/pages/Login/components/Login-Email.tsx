@@ -1,4 +1,4 @@
-import { ValidationType } from "@/models";
+import { EmailRegex, ValidationType } from "@/models";
 import { addValidation, updateValidation } from "@/redux";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -24,11 +24,9 @@ const LoginEmail = (props: { isVisible: boolean}) => {
   const handleChange = (e: any) => {
     setEmail(e.target.value);
   };
-
-  const emailRegExp = new RegExp(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g);
   
   const handleBlur = async (e: any) =>{
-    const isOk = await emailRegExp.test(e.target.value);
+    const isOk = await EmailRegex.test(e.target.value);
     dispatch( updateValidation({ 
       id: "email",
       value: email,

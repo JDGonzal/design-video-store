@@ -1244,3 +1244,8 @@ pnpm install rxjs @reactivex/rxjs
           }
 ```
 7. Some improvements in the "medicalCenter.adapter.ts" to validate each field or return a default value.
+
+## 15. Adding Two new Components "LoginConfirmPassword" and "LoginUserType"
+1. Create both New Compononents.
+2. Back to the `props` element because the rendering time was so long using the `rxjs` for `isVisisble` variable.
+3. Keeps the `medicalCenter.service` using the `rxjs` package.

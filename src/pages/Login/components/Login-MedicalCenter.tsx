@@ -1,5 +1,5 @@
 import { addValidation, updateValidation } from "@/redux";
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef} from "react";
 import { useDispatch } from "react-redux";
 import {
   ValidationType,
@@ -7,21 +7,17 @@ import {
   MedicalCenterableInterface,
 } from "@/models";
 import { valueTypeUtility } from "@/utilities";
-import { dataSharedService, medicalCenterService } from "@/services";
+import { medicalCenterService } from "@/services";
 import { LoginMedicalCenterId, LoginMedicalCenterStateNCity } from ".";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const LoginMedicalCenter = () => {
+const LoginMedicalCenter = (props: { isVisible: boolean }) => {
   const isFirstTime = useRef(true);
-  const [isVisible, setIsVisible] = useState(false);
 
   const [medicalCenter, setMedicalCenter] = useState(MedicalCenterInitial);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dataSharedService.getDataShared().subscribe((data) => {
-      if (data !== null) setIsVisible(data as boolean);
-    });
     medicalCenterService.getMedicalCenter().subscribe((data) => {
       if (data) setMedicalCenter(data as MedicalCenterableInterface);
     });
@@ -33,7 +29,7 @@ const LoginMedicalCenter = () => {
           value: medicalCenter,
           type: ValidationType.Json_,
           isValid: false,
-          isVisible: isVisible,
+          isVisible: props.isVisible,
           message: "MedicalCenter",
         })
       );
@@ -43,12 +39,12 @@ const LoginMedicalCenter = () => {
           id: "medicalCenter",
           value: medicalCenter,
           isValid: medicalCenter.ok,
-          isVisible: isVisible,
+          isVisible: props.isVisible,
         })
       );
     }
     medicalCenterService.setMedicalCenter(medicalCenter);
-  }, [dispatch, isVisible, medicalCenter]);
+  }, [dispatch, props.isVisible, medicalCenter]);
 
   const handleChange = async (e: any) => {
     medicalCenterService.getMedicalCenter().subscribe((data) => {
@@ -66,13 +62,13 @@ const LoginMedicalCenter = () => {
   };
 
   return (
-    <div className={`${isVisible ? "visible" : "hidden"}`}>
+    <div className={`${props.isVisible ? "visible" : "hidden"}`}>
       <div className="flex flex-col gap-2 bg-slate-100 p-2 rounded-md mb-3 form-group required">
         <label htmlFor="" className="control-label">
           Centro Médico
         </label>
         <div className="rounded-md flex flex-col gap-1">
-          <LoginMedicalCenterId />
+          <LoginMedicalCenterId isVisible={props.isVisible}/>
           {medicalCenter.found === 0 ? (
             <>
               <input
@@ -100,7 +96,7 @@ const LoginMedicalCenter = () => {
                 onBlur={handleBlur}
               />
               <div className="flex flex-col-2 gap-1">
-                <LoginMedicalCenterStateNCity />
+                <LoginMedicalCenterStateNCity isVisible={props.isVisible}/>
               </div>
             </>
           ) : (
@@ -109,7 +105,7 @@ const LoginMedicalCenter = () => {
               <input type="text" value={medicalCenter.address} readOnly />
               <input type="number" value={medicalCenter.phone} readOnly />
               <div className="flex flex-col-2 gap-1">
-                <LoginMedicalCenterStateNCity />
+                <LoginMedicalCenterStateNCity isVisible={props.isVisible}/>
               </div>
             </>
           )}

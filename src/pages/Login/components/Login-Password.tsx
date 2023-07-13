@@ -1,4 +1,8 @@
-import { ValidationType } from "@/models";
+import {
+  MediumPasswordRegex,
+  StrongPasswordRegex,
+  ValidationType,
+} from "@/models";
 import { addValidation, updateValidation } from "@/redux";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -18,29 +22,25 @@ const LoginPassword = (props: { isVisible: boolean }) => {
         type: ValidationType.String_,
         isValid: false,
         isVisible: props.isVisible,
-        message: "password",
+        message: "Contraseña",
       })
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const strongPassword = new RegExp(
-    "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})"
-  );
-  const mediumPassword = new RegExp(
-    "((?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{6,}))|((?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9])(?=.{8,}))"
-  );
-
   const strengthChecker = async (password: string) => {
     let isValid = false;
-    if (await strongPassword.test(password) && password.length >= 10) {
+    if ((await StrongPasswordRegex.test(password)) && password.length >= 10) {
       setbackgroundColor(" bg-green-700");
       setstrengthBadge("Fuerte");
-      isValid=true;
-    } else if ( await mediumPassword.test(password) && password.length >= 6) {
+      isValid = true;
+    } else if (
+      (await MediumPasswordRegex.test(password)) &&
+      password.length >= 6
+    ) {
       setbackgroundColor(" bg-orange-500");
       setstrengthBadge("Medio");
-      isValid=true;
+      isValid = true;
     } else {
       setbackgroundColor(" bg-red-700");
       setstrengthBadge("Débil");
@@ -54,7 +54,7 @@ const LoginPassword = (props: { isVisible: boolean }) => {
   };
 
   const handleBlur = async (e: any) => {
-    const isOk =await strengthChecker(e.target.value);
+    const isOk = await strengthChecker(e.target.value);
     await dispatch(
       updateValidation({
         id: "password",
@@ -66,29 +66,31 @@ const LoginPassword = (props: { isVisible: boolean }) => {
   };
 
   return (
-    <div className="flex flex-col gap-2 bg-slate-100 p-2 rounded-md mb-3 form-group required">
+    <div className="required form-group">
       <label htmlFor="" className="control-label">
         Contraseña
       </label>
-      <input
-        className="rounded-md"
-        type="password"
-        placeholder="Contraseña"
-        required={true}
-        autoComplete='current-password' 
-        id='password'
-        name='password' 
-        onBlur={handleBlur}
-        onChange={handleChange}
-      />
-      <label
-        htmlFor=""
-        className={`${
-          props.isVisible ? "visible" : "hidden"
-        } ${backgroundColor} `}
-      >
-        {strengthBadge}
-      </label>
+      <div className="rounded-md flex flex-col gap-1">
+        <input
+          className="rounded-md"
+          type="password"
+          placeholder="Contraseña"
+          required={true}
+          autoComplete={props.isVisible ? "new-password" : "current-password"}
+          id="password"
+          name="password"
+          onBlur={handleBlur}
+          onChange={handleChange}
+        />
+        <label
+          htmlFor=""
+          className={`${
+            props.isVisible ? "visible" : "hidden"
+          } ${backgroundColor} `}
+        >
+          {strengthBadge}
+        </label>
+      </div>
     </div>
   );
 };
