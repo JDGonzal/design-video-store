@@ -12,11 +12,10 @@ import {
   getMainEstado,
   updateValidation,
 } from "@/redux";
-import { dataSharedService, medicalCenterService } from "@/services";
+import { medicalCenterService } from "@/services";
 import { alertErrorUtility, valueTypeUtility } from "@/utilities";
 
-function LoginMedicalCenterId() {
-  const [isVisible, setIsVisible] = useState(false);
+function LoginMedicalCenterId(props: { isVisible: boolean }) {
   const [medicalCenter, setMedicalCenter] = useState(MedicalCenterInitial);
   const dispatch = useDispatch();
 
@@ -24,9 +23,6 @@ function LoginMedicalCenterId() {
   const citiesList = useSelector((state: AppStore) => state.citiesList);
 
   useEffect(() => {
-    dataSharedService.getDataShared().subscribe((data) => {
-      if (data !== null) setIsVisible(data as boolean);
-    });
     medicalCenterService.getMedicalCenter().subscribe((data) => {
       setMedicalCenter(data as MedicalCenterableInterface);
     });
@@ -35,11 +31,11 @@ function LoginMedicalCenterId() {
         id: "medicalCenter",
         value: medicalCenter,
         isValid: medicalCenter.ok,
-        isVisible: isVisible,
+        isVisible: props.isVisible,
       })
     );
     medicalCenterService.setMedicalCenter(medicalCenter);
-  }, [dispatch, isVisible, medicalCenter]);
+  }, [dispatch, props.isVisible, medicalCenter]);
 
   const refreshMedicalCenters = async (id: number) => {
     await getMedicalCenter(id).then(async (data: any) => {
@@ -102,7 +98,7 @@ function LoginMedicalCenterId() {
       type="number"
       placeholder="Nit Centro Médico"
       value={medicalCenter.id}
-      required={isVisible}
+      required={props.isVisible}
       id="medicalCenter"
       name={"id"}
       onChange={handleChange}

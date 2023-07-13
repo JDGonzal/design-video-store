@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { MedicalCenterInitial, MedicalCenterableInterface } from "@/models";
-import { dataSharedService, medicalCenterService } from "@/services";
+import { medicalCenterService } from "@/services";
 import {
   AppStore,
   getMainCity,
@@ -12,8 +12,7 @@ import {
 } from "@/redux";
 import { valueTypeUtility } from "@/utilities";
 
-function LoginMedicalCenterStateNCity() {
-  const [isVisible, setIsVisible] = useState(false);
+function LoginMedicalCenterStateNCity(props: { isVisible: boolean }) {
   const [medicalCenter, setMedicalCenter] = useState(MedicalCenterInitial);
   const dispatch = useDispatch();
 
@@ -21,9 +20,6 @@ function LoginMedicalCenterStateNCity() {
   const citiesList = useSelector((state: AppStore) => state.citiesList);
 
   useEffect(() => {
-    dataSharedService.getDataShared().subscribe((data) => {
-      if (data !== null) setIsVisible(data as boolean);
-    });
     medicalCenterService.getMedicalCenter().subscribe((data) => {
       setMedicalCenter(data as MedicalCenterableInterface);
     });
@@ -32,11 +28,11 @@ function LoginMedicalCenterStateNCity() {
         id: "medicalCenter",
         value: medicalCenter,
         isValid: medicalCenter.ok,
-        isVisible: isVisible,
+        isVisible: props.isVisible,
       })
     );
     medicalCenterService.setMedicalCenter(medicalCenter);
-  }, [dispatch, isVisible, medicalCenter]);
+  }, [dispatch, props.isVisible, medicalCenter]);
 
   const handleChange = async (e: any) => {
     medicalCenterService.getMedicalCenter().subscribe((data) => {
