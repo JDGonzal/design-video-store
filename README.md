@@ -1249,3 +1249,105 @@ pnpm install rxjs @reactivex/rxjs
 1. Create both New Compononents.
 2. Back to the `props` element because the rendering time was so long using the `rxjs` for `isVisisble` variable.
 3. Keeps the `medicalCenter.service` using the `rxjs` package.
+
+## 16. Improvement to the Fetch Process.
+1. Create a "anyFetch.utility.ts" file, to feed with some paramters the mor utils info and the method:
+```javascript
+    export const anyFetchUtility = (method:methodType, token?: string, abort?: any ): RequestInit => {
+      return {
+        method: method,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'x-auth-token': ((token)?token: ''),
+          'signal': ((abort)?abort:null),
+        }
+      }
+    }
+    export enum methodType{
+      Get = "GET",
+      Post = "POST",
+      Delete = "DELETE",
+    }
+```
+2. Create a "api-answer.model.ts" file, to control the answer of the fetch process:
+```javascript
+    export interface ApiAnswerableInterface{
+      loading: boolean;
+      error: any;
+      data: any;
+      abort: any;
+    }
+    export const ApiAnswerInit: ApiAnswerableInterface={
+      loading: true,
+      error: null,
+      data: null,
+      abort: null,
+    }
+```
+3. Create a "anyFetch.service.ts" file, with the process for any api-url:
+```javascript
+    import { ApiAnswerInit, ApiAnswerableInterface } from "@/models";
+    export const anyFetch = async (apiUrl: string | URL, init?: RequestInit): Promise<ApiAnswerableInterface> => {
+      let apiAnswer: ApiAnswerableInterface = ApiAnswerInit;
+      let data: any = {};
+      const abortController = new AbortController();
+      try {
+        const response = await fetch(apiUrl, ({...init, signal:abortController.signal}),);
+        data = await response.json();
+        const abort =()=> {
+          abortController.abort();
+        }
+        apiAnswer = ({
+          ...apiAnswer,
+          data: data,
+          abort:abort,
+        });
+      } catch (err) {
+        apiAnswer = ({
+          ...apiAnswer,
+          error: err
+        })
+      } finally {
+        apiAnswer = ({
+          ...apiAnswer,
+          loading: false,
+        })
+      }
+      return apiAnswer;
+    }
+```
+4. Deelete the "estado.service.ts" and "city.service.ts" files.
+5. Using in `FeedTables` component the new `anyFetch` service:
+```javascript
+  useEffect(() => {
+    const apiState = `${VITE_API_URL}state`;
+    anyFetch(apiState, anyFetchUtility(methodType.Get)).then(
+      ({ data: estados, error, /* loading, abort */ }) => {
+        if (!estados || error) {
+          dispatch(createAlert(alertErrorUtility));
+        } else {
+          estados.map(async (estado: any) => {
+            dispatch(createEstado(createEstadoAdapter(estado)));
+            const apiState = `${VITE_API_URL}city/${estado.stateId}`
+            anyFetch(apiState, anyFetchUtility(methodType.Get)).then(
+              ({ data: cities, error, /* loading, abort */ }) => {
+                if (!cities || error) {
+                  dispatch(createAlert(alertErrorUtility));
+                } else {
+                  cities.map(async (city: any) => {
+                    await dispatch(createCity(createCityAdapter(city)));
+                  });
+                }
+              }
+            );
+          });
+        }
+        console.log('FeedTables.Estados:', estados);
+      }
+    );
+    return()=>{
+      console.log('FeedTables.End');
+    }
+  }, []);
+```
