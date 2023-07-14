@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
 import { createAlert, createCity, createEstado } from "@/redux";
-import { anyFetch } from "@/api-services";
+import { anyFetch } from "@/services";
 import { VITE_API_URL, alertErrorUtility, anyFetchUtility, methodType } from "@/utilities";
 import { createCityAdapter, createEstadoAdapter } from "@/adapters";
 

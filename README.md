@@ -1317,7 +1317,7 @@ pnpm install rxjs @reactivex/rxjs
       return apiAnswer;
     }
 ```
-4. Deelete the "estado.service.ts" and "city.service.ts" files.
+4. Delete the "estado.service.ts" and "city.service.ts" files.
 5. Using in `FeedTables` component the new `anyFetch` service:
 ```javascript
   useEffect(() => {
@@ -1351,3 +1351,11 @@ pnpm install rxjs @reactivex/rxjs
     }
   }, []);
 ```
+
+## 17. Apply the "anyFetch.service" to MedicalCenter.Service
+
+1. The "anyFetch.service" moved to "services" directory
+2. Change the `medicalCenterService` by `anyFetch`, in "Login-MedicalCenter-Id.tsx" file.
+3. Adding a `RiEyeCloseLine`, and `RiEyeLine` to show or hide the password, in `LoginPassword` component.
+4. Adding a `RiThumbDownLine`, and  `RiThumbUpLine` to show if the password confirmed is ok, in `LoginConfirmPassword` component.
+5. Delete the "medicalCenter.service.ts" file.
