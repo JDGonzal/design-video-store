@@ -6,12 +6,14 @@ import {
 import { addValidation, updateValidation } from "@/redux";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { RiEyeCloseLine, RiEyeLine } from "react-icons/ri";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const LoginPassword = (props: { isVisible: boolean }) => {
   const [password, setPassword] = useState("");
   const [strengthBadge, setstrengthBadge] = useState("Nivel");
   const [backgroundColor, setbackgroundColor] = useState("bg-blue-300");
+  const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -71,17 +73,26 @@ const LoginPassword = (props: { isVisible: boolean }) => {
         Contraseña
       </label>
       <div className="rounded-md flex flex-col gap-1">
-        <input
-          className="rounded-md"
-          type="password"
-          placeholder="Contraseña"
-          required={true}
-          autoComplete={props.isVisible ? "new-password" : "current-password"}
-          id="password"
-          name="password"
-          onBlur={handleBlur}
-          onChange={handleChange}
-        />
+        <div className="relative">
+          <button
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-xl"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? <RiEyeLine /> : <RiEyeCloseLine />}
+          </button>
+          <input
+            className="rounded-md pl-2 pr-10 w-full"
+            type={showPassword ? "text" : "password"}
+            placeholder="Contraseña"
+            required={true}
+            autoComplete={props.isVisible ? "new-password" : "current-password"}
+            id="password"
+            name="password"
+            onBlur={handleBlur}
+            onChange={handleChange}
+          />
+        </div>
+
         <label
           htmlFor=""
           className={`${

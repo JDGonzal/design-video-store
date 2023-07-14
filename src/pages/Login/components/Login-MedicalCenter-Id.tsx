@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { createMedicalCenterAdapter } from "@/adapters";
-import { getMedicalCenter } from "@/api-services";
 import { MedicalCenterInitial, MedicalCenterableInterface } from "@/models";
 import {
   AppStore,
@@ -12,8 +11,14 @@ import {
   getMainEstado,
   updateValidation,
 } from "@/redux";
-import { medicalCenterService } from "@/services";
-import { alertErrorUtility, valueTypeUtility } from "@/utilities";
+import { anyFetch, medicalCenterService } from "@/services";
+import {
+  VITE_API_URL,
+  alertErrorUtility,
+  anyFetchUtility,
+  methodType,
+  valueTypeUtility,
+} from "@/utilities";
 
 function LoginMedicalCenterId(props: { isVisible: boolean }) {
   const [medicalCenter, setMedicalCenter] = useState(MedicalCenterInitial);
@@ -38,27 +43,27 @@ function LoginMedicalCenterId(props: { isVisible: boolean }) {
   }, [dispatch, props.isVisible, medicalCenter]);
 
   const refreshMedicalCenters = async (id: number) => {
-    await getMedicalCenter(id).then(async (data: any) => {
-      medicalCenterService.getMedicalCenter().subscribe((data) => {
-        setMedicalCenter(data as MedicalCenterableInterface);
-      });
-      if (!data) {
-        dispatch(createAlert(alertErrorUtility));
-      } else {
-        if ((await data) && data.ok) {
-          const adapted: any = createMedicalCenterAdapter(data);
-          adapted["id"] = id;
-          if (adapted.cityId > 0 && adapted.stateId > 0) {
-            dispatch(getMainEstado(adapted.stateId));
-            adapted["stateName"] = estadosList.estadoName;
-            dispatch(getMainCity(adapted.cityId));
-            adapted["cityName"] = citiesList.cityName;
+    const apiMedicalCenter = `${VITE_API_URL}medicalcenter/medicalcentername/${id}`;
+    anyFetch(apiMedicalCenter, anyFetchUtility(methodType.Get)).then(
+      ({ data, error /* loading, abort */ }) => {
+        if (!data || error) {
+          dispatch(createAlert(alertErrorUtility));
+        } else {
+          if ((data) && data.ok) {
+            const adapted: any = createMedicalCenterAdapter(data);
+            adapted["id"] = id;
+            if (adapted.cityId > 0 && adapted.stateId > 0) {
+              dispatch(getMainEstado(adapted.stateId));
+              adapted["stateName"] = estadosList.estadoName;
+              dispatch(getMainCity(adapted.cityId));
+              adapted["cityName"] = citiesList.cityName;
+            }
+            setMedicalCenter({ ...adapted });
+            console.log("getMedicalCenter.adapted:", medicalCenter);
           }
-          setMedicalCenter({ ...adapted });
-          console.log("getMedicalCenter.adapted:", medicalCenter);
         }
       }
-    });
+    );
   };
 
   const handleChange = async (e: any) => {
