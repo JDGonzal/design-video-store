@@ -1,3 +1,4 @@
+export * from './api-answer.model';
 export * from './banner-alert.model';
 export * from './city.model';
 export * from './estado.model';

@@ -1,39 +1,47 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
-import { AppStore, createAlert, createCity, createEstado } from "@/redux";
-import { getCities, getStates } from "@/api-services";
-import { alertErrorUtility } from "@/utilities";
+import { createAlert, createCity, createEstado } from "@/redux";
+import { anyFetch } from "@/api-services";
+import { VITE_API_URL, alertErrorUtility, anyFetchUtility, methodType } from "@/utilities";
 import { createCityAdapter, createEstadoAdapter } from "@/adapters";
 
 const FeedTables = () => {
 
-  const estadosList = useSelector((state: AppStore) => state.estadosList);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getStates().then(async(estados: any) => {
-      if (await !estados) {
-        await dispatch(createAlert(alertErrorUtility));
-      } else {
-        console.log('estados:', estados);
-        await estados.map(async(estado: any) => {
-          await dispatch(createEstado(createEstadoAdapter(estado)));
-          await getCities(estado.stateId).then(async(cities: any) => {
-            if (await !cities) {
-              await dispatch(createAlert(alertErrorUtility));
-            } else {
-              await cities.map(async(city: any) => {
-                await dispatch(createCity(createCityAdapter(city)));
-              })
-            }
+    const apiState = `${VITE_API_URL}state`;
+    anyFetch(apiState, anyFetchUtility(methodType.Get)).then(
+      ({ data: estados, error, /* loading, abort */ }) => {
+        if (!estados || error) {
+          dispatch(createAlert(alertErrorUtility));
+        } else {
+          estados.map(async (estado: any) => {
+            dispatch(createEstado(createEstadoAdapter(estado)));
+            const apiState = `${VITE_API_URL}city/${estado.stateId}`
+            anyFetch(apiState, anyFetchUtility(methodType.Get)).then(
+              ({ data: cities, error, /* loading, abort */ }) => {
+                if (!cities || error) {
+                  dispatch(createAlert(alertErrorUtility));
+                } else {
+                  cities.map(async (city: any) => {
+                    await dispatch(createCity(createCityAdapter(city)));
+                  });
+                }
+              }
+            );
           });
-        })
+        }
+        console.log('FeedTables.Estados:', estados);
       }
-    });
-  }, [dispatch, estadosList]);
+    );
+    return()=>{
+      console.log('FeedTables.End');
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <></>
