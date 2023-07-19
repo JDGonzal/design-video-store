@@ -1,8 +1,14 @@
+import { AppStore } from "@/redux";
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
+
 import { Header } from "@/components";
 import { Sidebar, Content } from ".";
 
 const Home = () => {
-  return (
+  const tokenAccess = useSelector((state: AppStore) => state.tokenAccess);
+
+  return tokenAccess.ok ? (
     <div className="min-h-screen">
       <Header />
       <div className="h-[90vh] flex p-8">
@@ -10,6 +16,8 @@ const Home = () => {
         <Content />
       </div>
     </div>
+  ) : (
+    <Navigate to="/login" replace />
   );
 };
 

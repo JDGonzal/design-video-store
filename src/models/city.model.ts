@@ -1,11 +1,11 @@
-export interface CityableInterface{
+export interface CitiesListableInterface{
   cityId:     number;
   cityName:   string;
   estadoId:   number;
-  citiesList: CitiesListInterface[]; 
+  citiesList: CityListableInterface[]; 
 }
 
-export interface CitiesListInterface{
+export interface CityListableInterface{
   cityId:     number;
   cityName:   string;
   estadoId:   number;

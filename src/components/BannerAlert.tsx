@@ -14,17 +14,21 @@ function BannerAlert() {
   }, [bannerAlert, dispatch]);
 
   return (
-    <div
-      className={`${
-        bannerAlert.background} bordermedicalCenter.data-t border-b 
-        border-blue-500 ${bannerAlert.textColor} px-4 py-3 fixed 
-        ${bannerAlert.isVisible ? "left-0" : "-left-full"}`} role="alert"
-    >
-      <div className="justify-between flex">
-        <p className="font-bold">{bannerAlert.title}</p>
-        <button onClick={() => dispatch(resetAlert())}>X</button>
+    <div className="relative">
+      <div
+        className={`${
+          bannerAlert.back
+        } bordermedicalCenter.data-t border-b 
+      border-blue-500 ${bannerAlert.color} px-4 py-3 absolute 
+      ${bannerAlert.isVisible ? " left-0 inset-x-0 top-0 h-16" : "-left-full"}`}
+        role="alert"
+      >
+        <div className="justify-between flex">
+          <p className="font-bold text-lg md:text-2xl">{bannerAlert.title}</p>
+          <button onClick={() => dispatch(resetAlert())}>X</button>
+        </div>
+        <p className="text-sm md:text-base">{bannerAlert.message}</p>
       </div>
-      <p className="text-sm">{bannerAlert.message}</p>
     </div>
   );
 }

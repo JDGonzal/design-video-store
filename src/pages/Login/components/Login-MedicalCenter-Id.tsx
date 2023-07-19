@@ -14,7 +14,7 @@ import {
 import { anyFetch, medicalCenterService } from "@/services";
 import {
   VITE_API_URL,
-  alertErrorUtility,
+  alertMessageUtility,
   anyFetchUtility,
   methodType,
   valueTypeUtility,
@@ -47,7 +47,7 @@ function LoginMedicalCenterId(props: { isVisible: boolean }) {
     anyFetch(apiMedicalCenter, anyFetchUtility(methodType.Get)).then(
       ({ data, error /* loading, abort */ }) => {
         if (!data || error) {
-          dispatch(createAlert(alertErrorUtility));
+          dispatch(createAlert(alertMessageUtility({})));
         } else {
           if ((data) && data.ok) {
             const adapted: any = createMedicalCenterAdapter(data);

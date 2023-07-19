@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
-import { useSelector } from "react-redux";
 import { BannerAlert, Header } from "@/components";
 import {
   LoginConfirmPassword,
@@ -11,19 +12,50 @@ import {
   LoginUserType,
 } from "./components";
 
-import { AppStore } from "@/redux";
+import { AppStore, createAlert } from "@/redux";
+import { alertMessageUtility } from "@/utilities";
+import { isValidEmail, validateAllFields, verifyData } from "./utilities";
+import { doLogin } from "./utilities/loginDoLogin";
 
 function Login() {
-  const [showRegistry, setShowRegistry] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [mainButtonClick, setMainButtonClick] = useState(false);
+
   const validations = useSelector((state: AppStore) => state.validations);
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log("Login.Once");
   }, []);
 
-  const handleSubmit = (e: any) => {
+  const doSignUp = async () => {
+    if (isSignUp) {
+      console.log("Creates the user");
+      // TODO: Pending create the user--------------------   */
+    }
+  };
+
+  const handleSubmit = async (e: any) => {
     e.preventDefault(); // Avoid page refreshing.
-    console.log("Validations:", validations);
+    const areValid = await validateAllFields(validations);
+    console.log("areValid&mainButton:", areValid, mainButtonClick);
+    setMainButtonClick(false);
+    if (await (areValid === true && mainButtonClick === true)) {
+      await isValidEmail(dispatch, validations, isSignUp).then(
+        ({ signup, login }) => {
+          if (signup) doSignUp();
+          if (login) doLogin(isSignUp, dispatch, validations, navigate);
+        }
+      );
+    } else if (!areValid && mainButtonClick)
+      dispatch(createAlert(alertMessageUtility(verifyData)));
+  };
+
+  const changeSignUp = () => {
+    setIsSignUp(!isSignUp);
+    setMainButtonClick(false);
   };
 
   return (
@@ -37,32 +69,33 @@ function Login() {
           className="w-[90vh] md:w-[60vh] lg:w-[50vh] rounded-xl p-4 m-8 bg-slate-200 items-center text-center"
         >
           <h4 className="mb-5 text-black text-2xl font-bold w-full">
-            {showRegistry ? "Registro" : "Inicio Sesión"}
+            {isSignUp ? "Registro" : "Inicio Sesión"}
           </h4>
           <LoginEmail isVisible={true} />
-          <LoginMedicalCenter isVisible={showRegistry} />
+          <LoginMedicalCenter isVisible={isSignUp} />
           <div className="flex flex-col gap-2 bg-slate-100 p-2 rounded-md mb-3 form-group required ">
-            <LoginPassword isVisible={showRegistry} />
-            <LoginConfirmPassword isVisible={showRegistry} />
+            <LoginPassword isVisible={isSignUp} />
+            <LoginConfirmPassword isVisible={isSignUp} />
           </div>
-          <LoginUserType isVisible={showRegistry}/>
+          <LoginUserType isVisible={isSignUp} />
           <div>
             <button
               type="submit"
               className="bg-gray-900 text-slate-100 rounded-full w-full p-2 hover:-translate-y-1 transition-all duration-200"
+              onClick={() => setMainButtonClick(true)}
             >
-              {showRegistry ? "Registrar" : "Iniciar Sesión"}
+              {isSignUp ? "Registrar" : "Iniciar Sesión"}
             </button>
           </div>
 
           <div>
             <button
               className={`text-xs rounded-md px-2 py-1 ${
-                showRegistry ? "mt-12" : "mt-96"
+                isSignUp ? "mt-12" : "mt-96"
               }`}
-              onClick={() => setShowRegistry(!showRegistry)}
+              onClick={() => changeSignUp()}
             >
-              {showRegistry
+              {isSignUp
                 ? "Tiene una cuenta, Inicie Sesión Aquí"
                 : "No tiene una cuenta, Registrarse Aquí"}
             </button>

@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { ValidationableInterface } from '@/models';
+import { ValidationListableInterface } from '@/models';
 
-const initialState: ValidationableInterface[] = [];
+const initialState: ValidationListableInterface[] = [];
 
 export const validationsSlice = createSlice({
   name: 'validation',

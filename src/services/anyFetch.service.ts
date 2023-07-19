@@ -7,6 +7,13 @@ export const anyFetch = async (apiUrl: string | URL, init?: RequestInit): Promis
   const abortController = new AbortController();
   try {
     const response = await fetch(apiUrl, ({...init, signal:abortController.signal}),);
+    const {ok,status, statusText, type } = response;
+    if(!ok){
+      apiAnswer = ({
+        ...apiAnswer,
+        error: {ok, status, statusText, type}
+      });
+    }
     data = await response.json();
     const abort =()=> {
       abortController.abort();
@@ -20,7 +27,7 @@ export const anyFetch = async (apiUrl: string | URL, init?: RequestInit): Promis
     apiAnswer = ({
       ...apiAnswer,
       error: err
-    })
+    });
   } finally {
     apiAnswer = ({
       ...apiAnswer,

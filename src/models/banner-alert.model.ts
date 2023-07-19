@@ -1,8 +1,8 @@
 export interface BannerAlertableInterface{
-  title: string;
-  message: string;
-  textColor: string;
-  background: string;
-  timeout: number;
-  isVisible:boolean;
+  title?: string;
+  message?: string;
+  color?: string;
+  back?: string;
+  timeout?: number;
+  isVisible?:boolean;
 }

@@ -1,13 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { validationsSlice, bannerAlertSlice, estadosSlice, citiesSlice} from "./states";
-import { BannerAlertableInterface, StatableInterface, ValidationableInterface, CityableInterface } from "@/models";
+import { validationsSlice, bannerAlertSlice, estadosSlice, citiesSlice, tokenAccessSlice} from "./states";
+import { BannerAlertableInterface, StatesListableInterface, ValidationListableInterface, CitiesListableInterface, TokenAccessibleInterface } from "@/models";
 
 
 export interface AppStore {
-  validations: ValidationableInterface[];
+  validations: ValidationListableInterface[];
   bannerAlert: BannerAlertableInterface;
-  estadosList: StatableInterface;
-  citiesList: CityableInterface;
+  estadosList: StatesListableInterface;
+  citiesList: CitiesListableInterface;
+  tokenAccess: TokenAccessibleInterface;
 }
 
 export default configureStore<AppStore>({
@@ -16,5 +17,6 @@ export default configureStore<AppStore>({
     bannerAlert: bannerAlertSlice.reducer,
     estadosList: estadosSlice.reducer,
     citiesList: citiesSlice.reducer,
+    tokenAccess: tokenAccessSlice.reducer
   }
 });
