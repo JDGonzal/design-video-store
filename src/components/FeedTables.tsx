@@ -2,9 +2,9 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-import { createAlert, createCity, createEstado } from "@/redux";
+import { createAlert, createCity, createEstado, resetTokenAccess } from "@/redux";
 import { anyFetch } from "@/services";
-import { VITE_API_URL, alertErrorUtility, anyFetchUtility, methodType } from "@/utilities";
+import { VITE_API_URL, alertMessageUtility, anyFetchUtility, methodType } from "@/utilities";
 import { createCityAdapter, createEstadoAdapter } from "@/adapters";
 
 const FeedTables = () => {
@@ -12,11 +12,12 @@ const FeedTables = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(resetTokenAccess);
     const apiState = `${VITE_API_URL}state`;
     anyFetch(apiState, anyFetchUtility(methodType.Get)).then(
       ({ data: estados, error, /* loading, abort */ }) => {
         if (!estados || error) {
-          dispatch(createAlert(alertErrorUtility));
+          dispatch(createAlert(alertMessageUtility({})));
         } else {
           estados.map(async (estado: any) => {
             dispatch(createEstado(createEstadoAdapter(estado)));
@@ -24,7 +25,7 @@ const FeedTables = () => {
             anyFetch(apiState, anyFetchUtility(methodType.Get)).then(
               ({ data: cities, error, /* loading, abort */ }) => {
                 if (!cities || error) {
-                  dispatch(createAlert(alertErrorUtility));
+                  dispatch(createAlert(alertMessageUtility({})));
                 } else {
                   cities.map(async (city: any) => {
                     await dispatch(createCity(createCityAdapter(city)));

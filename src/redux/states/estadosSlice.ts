@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { StatableInterface, StateListableInterface } from '@/models';
+import { StatesListableInterface, StateListableInterface } from '@/models';
 
 const estadosEmpty: StateListableInterface[] = [];
-const initialState:StatableInterface={
+const initialState:StatesListableInterface={
   estadoId:0,
   estadoName:'',
   estadosList:estadosEmpty,

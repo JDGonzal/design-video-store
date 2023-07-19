@@ -571,7 +571,7 @@ pnpm install @reduxjs/toolkit react-redux
 2. Create a "models" directory in the root ("src/models").
 3. Add a "validation.model.ts" file wih this information:
 ```javascript
-export interface ValidationableInterface{
+export interface ValidationListableInterface{
   id: string;
   value: string;
   type: ValidationType;
@@ -593,8 +593,8 @@ export default configureStore({});
 5. Create a "states" directory into "redux" directory, and create the "validationsSlice.ts" file, with this inside:
 ```javascript
 import { createSlice } from '@reduxjs/toolkit';
-import { ValidationableInterface } from '@/models';
-const initialState: ValidationableInterface[] = [];
+import { ValidationListableInterface } from '@/models';
+const initialState: ValidationListableInterface[] = [];
 export const validationsSlice = createSlice({
   name: 'validation', initialState: initialState, 
   reducers:{ }
@@ -607,9 +607,9 @@ export default validationsSlice.reducer;
 ```javascript
 import { configureStore } from "@reduxjs/toolkit";
 import { validationsSlice } from "./states";
-import { ValidationableInterface } from "@/models";
+import { ValidationListableInterface } from "@/models";
 export interface AppStore {
-  validations: ValidationableInterface[];
+  validations: ValidationListableInterface[];
 }
 export default configureStore<AppStore>({
   reducer: {
@@ -966,7 +966,7 @@ export default bannerAlertSlice.reducer;
 9. Add the new `slice` to the "store.ts" file:
 ```javascript
 export interface AppStore {
-  validations: ValidationableInterface[];
+  validations: ValidationListableInterface[];
   bannerAlert: BannerAlertableInterface;
 }
 export default configureStore<AppStore>({
@@ -1030,25 +1030,25 @@ export default BannerAlert;
 3. Move all data for creation of List based on "Cities" and "States" from "Login.tsx" to the new "FeedTables.tsx".
 4. The Estado Model get a big change to put before the array the data I can search:
 ```javascript
-export interface StatableInterface{
+export interface StatesListableInterface{
   estadoId:    number;
   estadoName:  string;
-  estadosList: StateListableInterface[];
+  estadosList: StatesListableInterface[];
 }
-export interface StateListableInterface{
+export interface StatesListableInterface{
     estadoId:    number;
     estadoName:  string;
 }
 ```
 5. Same situation for the City Model, the change to show the data I can search:
 ```javascript
-export interface CityableInterface{
+export interface CitiesListableInterface{
   cityId:     number;
   cityName:   string;
   estadoId:   number;
-  citiesList: CitiesListInterface[]; 
+  citiesList: CityListableInterface[]; 
 }
-export interface CitiesListInterface{
+export interface CityListableInterface{
   cityId:     number;
   cityName:   string;
   estadoId:   number;
@@ -1325,7 +1325,7 @@ pnpm install rxjs @reactivex/rxjs
     anyFetch(apiState, anyFetchUtility(methodType.Get)).then(
       ({ data: estados, error, /* loading, abort */ }) => {
         if (!estados || error) {
-          dispatch(createAlert(alertErrorUtility));
+          dispatch(createAlert(alertMessageUtility));
         } else {
           estados.map(async (estado: any) => {
             dispatch(createEstado(createEstadoAdapter(estado)));
@@ -1333,7 +1333,7 @@ pnpm install rxjs @reactivex/rxjs
             anyFetch(apiState, anyFetchUtility(methodType.Get)).then(
               ({ data: cities, error, /* loading, abort */ }) => {
                 if (!cities || error) {
-                  dispatch(createAlert(alertErrorUtility));
+                  dispatch(createAlert(alertMessageUtility));
                 } else {
                   cities.map(async (city: any) => {
                     await dispatch(createCity(createCityAdapter(city)));
@@ -1359,3 +1359,59 @@ pnpm install rxjs @reactivex/rxjs
 3. Adding a `RiEyeCloseLine`, and `RiEyeLine` to show or hide the password, in `LoginPassword` component.
 4. Adding a `RiThumbDownLine`, and  `RiThumbUpLine` to show if the password confirmed is ok, in `LoginConfirmPassword` component.
 5. Delete the "medicalCenter.service.ts" file.
+
+## 18. Doing the Login using the API to validate the user credentials
+
+1. Add to the "anyFetch.utility.ts" file a `body:` and movieng the `signal:` out of `headers:`:
+```javascript
+export const anyFetchUtility = (method:methodType, token?: string, body?: BodyInit, abort?: AbortSignal ): RequestInit => {
+  return {
+    method: method,
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'x-auth-token': ((token)?token: ''),
+    },
+    body:((body)?body:null),
+    signal: ((abort)?abort:null),
+  }
+}
+export enum methodType{
+  Get = "GET",
+  Post = "POST",
+  Delete = "DELETE",
+}
+``` 
+
+2. Improvement to "alertMessage.utility.ts" file letting to use another values:
+```javascript
+import { BannerAlertableInterface } from "@/models";
+export const alertMessageUtility = (title?: string, message?: string, color?: string, back?: string, timeout?: number): BannerAlertableInterface => {
+  return {
+    title: (title ? title : "Error"),
+    message: (message ? message : "Se ha presentado una falla.\nPor favor avisarle al administrador"),
+    textColor: (color ? color : "text-blue-700"),
+    background: (back ? back : "bg-yellow-300"),
+    timeout: (timeout ? timeout : 5000),
+    isVisible: true,
+  }
+};
+```
+3. Adding the `isFirstTime` as `useRef(true)` in "Login-ConfirmPassword.tsx", "Login-Password.tsx" , and "Login-UserType.tsx" files or components.
+4. Adding the main process in "Login.tsx" file to validate the user-Login in `handleSubmit` method.
+5. The "Home.tsx" file return to root if tokenAccess.ok is `false`.
+6. Adding the "TokenSlice.ts" and "token.model.ts" files.
+7. Controlling the Login process with an API and feeting the "TokenAccess" in the Redux Store.
+8. Because the "Login.tsx" file become so big with a lot of methods, then I distribute them into "utilities" files in the same "Login" directory.
+9. Adding a Error control in the "anyFetch.service.ts" file, for data in the `response`:
+```javascript
+    const response = await fetch(apiUrl, ({...init, signal:abortController.signal}),);
+    const {ok,status, statusText, type } = response;
+    if(!ok){
+      apiAnswer = ({
+        ...apiAnswer,
+        error: {ok, status, statusText, type}
+      });
+    }
+```
+10. Adjusting the the `Interface` into the model files.

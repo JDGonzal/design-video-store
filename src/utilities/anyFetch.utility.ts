@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const anyFetchUtility = (method:methodType, token?: string, abort?: any ): RequestInit => {
+export const anyFetchUtility = (method:methodType, token?: string, body?: BodyInit, abort?: AbortSignal ): RequestInit => {
   return {
     method: method,
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'x-auth-token': ((token)?token: ''),
-      'signal': ((abort)?abort:null),
-    }
+    },
+    body:((body)?body:null),
+    signal: ((abort)?abort:null),
   }
 }
 

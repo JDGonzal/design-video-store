@@ -1,11 +1,13 @@
 import { ValidationType } from "@/models";
 import { AppStore, addValidation, updateValidation } from "@/redux";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RiThumbDownLine, RiThumbUpLine } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const LoginConfirmPassword = (props: { isVisible: boolean }) => {
+  const isFirstTime = useRef(true);
+
   const [confirmPassword, setConfirmPassword] = useState("");
   const [backgroundColor, setbackgroundColor] = useState("bg-white");
   const [isValid, setIsValid] = useState(false);
@@ -13,18 +15,29 @@ const LoginConfirmPassword = (props: { isVisible: boolean }) => {
   const validations = useSelector((state: AppStore) => state.validations);
 
   useEffect(() => {
-    dispatch(
-      addValidation({
-        id: "confirmpassword",
-        value: confirmPassword,
-        type: ValidationType.String_,
-        isValid: false,
-        isVisible: props.isVisible,
-        message: "Confirmar Contraseña",
-      })
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (isFirstTime.current) {
+      isFirstTime.current = false;
+      dispatch(
+        addValidation({
+          id: "confirmpassword",
+          value: confirmPassword,
+          type: ValidationType.String_,
+          isValid: false,
+          isVisible: props.isVisible,
+          message: "Confirmar Contraseña",
+        })
+      );
+    } else {
+      dispatch(
+        updateValidation({
+          id: "confirmpassword",
+          value: confirmPassword,
+          isValid: isValid,
+          isVisible: props.isVisible,
+        })
+      );
+    }
+  }, [props.isVisible, dispatch, confirmPassword, isValid]);
 
   const confirmWithOriginal = async (password: string) => {
     setbackgroundColor(" bg-white");
@@ -47,13 +60,14 @@ const LoginConfirmPassword = (props: { isVisible: boolean }) => {
   };
 
   const handleBlur = async (e: any) => {
-    await confirmWithOriginal(e.target.value);
+    await setConfirmPassword(e.target.value);
+    await confirmWithOriginal(confirmPassword);
     await dispatch(
       updateValidation({
         id: "confirmpassword",
         value: confirmPassword,
         isValid: isValid,
-        isVisible: true, // props.isVisible,
+        isVisible: props.isVisible,
       })
     );
   };

@@ -1,15 +1,19 @@
 import { EmailRegex, ValidationType } from "@/models";
 import { addValidation, updateValidation } from "@/redux";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const LoginEmail = (props: { isVisible: boolean}) => {
+  const isFirstTime = useRef(true)
 
   const [email, setEmail] = useState("");
+  const [isValid, setIsValid] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() =>{
+    if (isFirstTime.current) {
+      isFirstTime.current = false;
     dispatch( addValidation({ 
       id: "email",
       value: email,
@@ -18,19 +22,29 @@ const LoginEmail = (props: { isVisible: boolean}) => {
       isVisible: props.isVisible,
       message: "Email",
     }));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]);
+  } else {
+    dispatch(
+      updateValidation({
+        id: "email",
+        value: email,
+        isValid: isValid,
+        isVisible: true, //always true
+      })
+    );
+  }
+  },[dispatch, email, isValid, props.isVisible]);
 
   const handleChange = (e: any) => {
     setEmail(e.target.value);
+    setIsValid(EmailRegex.test(e.target.value));
   };
   
   const handleBlur = async (e: any) =>{
-    const isOk = await EmailRegex.test(e.target.value);
+    setIsValid(EmailRegex.test(e.target.value));
     dispatch( updateValidation({ 
       id: "email",
       value: email,
-      isValid: isOk,
+      isValid: isValid,
       isVisible: props.isVisible,
     }));
   }

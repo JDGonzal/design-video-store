@@ -5,16 +5,12 @@ import { AuthWrapper, FeedTables } from "./components";
 import store from "@/redux/store";
 
 function App() {
-  const isAuthenticated = false;
   return (
     <Provider store={store}>
-      <FeedTables/>
+      <FeedTables />
       <BrowserRouter>
         <Routes>
-          <Route
-            path="/"
-            element={<AuthWrapper isAuthenticated={isAuthenticated} />}
-          />
+          <Route path="/" element={<AuthWrapper />} />
           <Route path="/home" element={<Home />} />
           <Route path="/login" element={<Login />} />
         </Routes>

@@ -1,15 +1,20 @@
 import { ValidationType } from "@/models";
 import { addValidation, updateValidation } from "@/redux";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { UserTypeInitial } from "../../../models/user-type.model";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const LoginUserType = (props: { isVisible: boolean }) => {
+  const isFirstTime = useRef(true);
+  const [isValid, setIsValid] = useState(false);
   const [userType, setUserType] = useState(UserTypeInitial);
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (isFirstTime.current) {
+      isFirstTime.current = false;
+    
     dispatch(
       addValidation({
         id: "usertype",
@@ -20,11 +25,20 @@ const LoginUserType = (props: { isVisible: boolean }) => {
         message: "Tipo de Usuario",
       })
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  } else {
+    dispatch(
+      updateValidation({
+        id: "usertype",
+        value: userType,
+        isValid: isValid,
+        isVisible: props.isVisible,
+      })
+    );
+  }
+  }, [props.isVisible, dispatch, userType, isValid]);
 
-  const validateUserType = (): boolean => {
-    if(userType.isClinic || userType.isLaboratory || userType.isAdmin) return true; else return false;
+  const validateUserType = () => {
+    if(userType.isClinic || userType.isLaboratory || userType.isAdmin) setIsValid(true); else setIsValid(false);
   };
 
   const handleChange = async (e: any) => {
@@ -32,16 +46,21 @@ const LoginUserType = (props: { isVisible: boolean }) => {
       ["isClinic"]: e.target.name==="isClinic"?true:false,
       ["isLaboratory"]: e.target.name==="isLaboratory"?true:false,
       ["isAdmin"]: e.target.name==="isAdmin"?true:false, });
+      validateUserType();
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleBlur = async (_e: any) => {
-    const isOk = validateUserType( );
+  const handleBlur = async (e: any) => {
+    setUserType({ ...userType, 
+      ["isClinic"]: e.target.name==="isClinic"?true:false,
+      ["isLaboratory"]: e.target.name==="isLaboratory"?true:false,
+      ["isAdmin"]: e.target.name==="isAdmin"?true:false, });
+    validateUserType();
     dispatch(
       updateValidation({
         id: "usertype",
         value: userType,
-        isValid: isOk,
+        isValid: isValid,
         isVisible: props.isVisible,
       })
     );
