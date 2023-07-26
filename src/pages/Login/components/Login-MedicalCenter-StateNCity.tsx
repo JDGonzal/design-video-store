@@ -8,9 +8,12 @@ import {
   AppStore,
   getMainCity,
   getMainEstado,
+  howManyIsValid,
+  howManyIsVisible,
   updateValidation,
 } from "@/redux";
 import { valueTypeUtility } from "@/utilities";
+import { isValidMedicalCenterUtility } from "../utilities";
 
 function LoginMedicalCenterStateNCity(props: { isVisible: boolean }) {
   const [medicalCenter, setMedicalCenter] = useState(MedicalCenterInitial);
@@ -31,6 +34,8 @@ function LoginMedicalCenterStateNCity(props: { isVisible: boolean }) {
         isVisible: props.isVisible,
       })
     );
+    dispatch(howManyIsVisible(null));
+    dispatch(howManyIsValid(null));
     medicalCenterService.setMedicalCenter(medicalCenter);
   }, [dispatch, props.isVisible, medicalCenter]);
 
@@ -42,6 +47,7 @@ function LoginMedicalCenterStateNCity(props: { isVisible: boolean }) {
     setMedicalCenter({
       ...medicalCenter,
       [e.target.name]: valueTypeUtility(e.target.value, e.target.type),
+      ok: isValidMedicalCenterUtility(medicalCenter),
     });
   };
 
@@ -49,6 +55,7 @@ function LoginMedicalCenterStateNCity(props: { isVisible: boolean }) {
     medicalCenterService.getMedicalCenter().subscribe((data) => {
       setMedicalCenter(data as MedicalCenterableInterface);
     });
+    console.log('State n City:',e.target.name);
     switch (await e.target.name) {
       case "stateId":
         dispatch(
@@ -57,6 +64,7 @@ function LoginMedicalCenterStateNCity(props: { isVisible: boolean }) {
         setMedicalCenter({
           ...medicalCenter,
           stateName: estadosList.estadoName,
+          ok: isValidMedicalCenterUtility(medicalCenter),
         });
         break;
       case "cityId":
@@ -64,6 +72,7 @@ function LoginMedicalCenterStateNCity(props: { isVisible: boolean }) {
         setMedicalCenter({
           ...medicalCenter,
           cityName: citiesList.cityName,
+          ok: isValidMedicalCenterUtility(medicalCenter),
         });
         break;
       default:

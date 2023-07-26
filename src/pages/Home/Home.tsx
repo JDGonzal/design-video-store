@@ -2,7 +2,7 @@ import { AppStore } from "@/redux";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 
-import { Header } from "@/components";
+import { BannerAlert, Header } from "@/components";
 import { Sidebar, Content } from ".";
 
 const Home = () => {
@@ -11,6 +11,7 @@ const Home = () => {
   return tokenAccess.ok ? (
     <div className="min-h-screen">
       <Header />
+      <BannerAlert/> 
       <div className="h-[90vh] flex p-8">
         <Sidebar />
         <Content />

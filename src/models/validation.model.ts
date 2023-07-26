@@ -1,3 +1,8 @@
+export interface ValidationsListableInterface{
+  percentIsValid: number;
+  quantityIsVisible:number;
+  validationsList: ValidationListableInterface[];
+}
 export interface ValidationListableInterface{
   id: string;
   value: string;

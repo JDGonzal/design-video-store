@@ -1415,3 +1415,104 @@ export const alertMessageUtility = (title?: string, message?: string, color?: st
     }
 ```
 10. Adjusting the the `Interface` into the model files.
+
+## 19. Improvement to "Validations" data staring in the Model
+
+1. Change in "validation.model.ts" file adding the `percentIsValid` and `quantityIsVisible`:
+```javascript
+    export interface ValidationsListableInterface{
+      percentIsValid: number;
+      quantityIsVisible:number;
+      validationsList: ValidationListableInterface[];
+    }
+    export interface ValidationListableInterface{
+      id: string;
+      value: string;
+```
+2. Changes in "store.ts" file:
+```javascript
+import { ..., ValidationsListableInterface, ... } from "@/models";
+
+export interface AppStore {
+  validations: ValidationsListableInterface;
+  ...
+}
+```
+3. Changes in "validationsSlice.ts" file , to `addValidation` and `updateValidation` `reducers`, to use the new `validationList`:
+```javascript
+    addValidation: (state, action) => {
+      const validationFound = state.validationsList.find(validation => validation.id === action.payload.id); // To avoid duplicates
+      if (!validationFound) {
+        state.validationsList.push(action.payload);
+      }
+    },
+    updateValidation: (state, action) => {
+      const { id, value, isValid, isVisible } = action.payload;
+      const validationFound = state.validationsList.find(validation => validation.id === id);
+      if (validationFound) {
+        validationFound.value = value;
+        validationFound.isValid = isValid;
+        validationFound.isVisible = isVisible;
+      }
+    },
+``` 
+4. Adding two elements in "validationsSlice.ts" file, `howManyIsVisible` and `howManyIsValid`, remember export the new ones:
+```javascript
+   howManyIsVisible: (state, _action) => {
+      let quantity = 0;
+      state.validationsList.map((validation: ValidationListableInterface) => {
+        if (validation.isVisible) quantity += 1;
+      });
+      state.quantityIsVisible = quantity;
+    },
+    howManyIsValid: (state, _action) => {
+      if (state.quantityIsVisible > 0) {
+        let quantity = 0;
+        state.validationsList.map((validation: ValidationListableInterface) => {
+          if (validation.isValid && validation.isVisible) quantity += 1;
+        });
+        state.percentIsValid = (quantity / state.quantityIsVisible) * 100;
+        if (state.percentIsValid > 95) state.percentIsValid = 100;
+        if (state.percentIsValid < 5) state.percentIsValid = 0;
+      }
+    },
+```
+5. Change in "loginValidateAllFiels.ts" the current values just calling the `dispatch` for `howManyIsVisible` and `howManyIsValid`:
+```javascript
+    import { howManyIsValid, howManyIsVisible } from "@/redux";
+    export const loginValidateAllFieldsUtility = async(dispatch: any) => {
+      console.log('loginValidateAllFieldsUtility');
+      await dispatch(howManyIsVisible(null));
+      await dispatch(howManyIsValid(null));
+    };
+```
+6. Change in all "utilities" of "Login.tsx" file the `validations` by `validationsList`.
+7. Add to each component of "Login.tsx" the icons `RiCheckLine`, `RiCloseLine`, to show if it is validor not.
+8. Add a bar in "login.tsx" file to show the percent of valid fields:
+```javascript
+          <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+            <div
+              className={`h-2.5 rounded-full ${
+                validations.percentIsValid < 70 ? "bg-red-600" : "bg-green-600"
+              }`}
+              style={{ width: `${validations.percentIsValid}%` }}
+            ></div>
+          </div>
+```
+9. To validate all Fields in the Medical Center fields, adding a "loginIsValidMedicalCenter.utility.ts" file:
+```javascript
+    import { MedicalCenterableInterface } from "@/models";
+    export const isValidMedicalCenterUtility = (medicalCenter: MedicalCenterableInterface) => {
+      let isValid = false;
+      const { id, name, address: _address, phone, cityId, cityName,stateId , stateName } = medicalCenter;
+      isValid =
+        id.toString().length >= 6 &&
+        name.toString().length >= 5 &&
+        phone.toString().length >= 6 &&
+        _address.toString().length >= 5 &&
+        (cityName.toString().length >=2 || cityId > 1000) &&
+        (stateName.toString().length >=2 || stateId > 1) ;
+      if (isValid) console.log('isValidMedicalCenterUtility');
+      return isValid;
+    }
+```
