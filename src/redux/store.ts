@@ -1,10 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { validationsSlice, bannerAlertSlice, estadosSlice, citiesSlice, tokenAccessSlice} from "./states";
-import { BannerAlertableInterface, StatesListableInterface, ValidationListableInterface, CitiesListableInterface, TokenAccessibleInterface } from "@/models";
-
+import { BannerAlertableInterface, StatesListableInterface, ValidationsListableInterface, CitiesListableInterface, TokenAccessibleInterface } from "@/models";
 
 export interface AppStore {
-  validations: ValidationListableInterface[];
+  validations: ValidationsListableInterface;
   bannerAlert: BannerAlertableInterface;
   estadosList: StatesListableInterface;
   citiesList: CitiesListableInterface;

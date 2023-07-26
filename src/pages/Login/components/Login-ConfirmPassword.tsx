@@ -1,7 +1,7 @@
 import { ValidationType } from "@/models";
-import { AppStore, addValidation, updateValidation } from "@/redux";
+import { AppStore, addValidation, howManyIsValid, howManyIsVisible, updateValidation } from "@/redux";
 import { useEffect, useRef, useState } from "react";
-import { RiThumbDownLine, RiThumbUpLine } from "react-icons/ri";
+import { RiCloseLine, RiCheckLine } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -36,18 +36,20 @@ const LoginConfirmPassword = (props: { isVisible: boolean }) => {
           isVisible: props.isVisible,
         })
       );
+      dispatch(howManyIsVisible(null));
+      dispatch(howManyIsValid(null));
     }
   }, [props.isVisible, dispatch, confirmPassword, isValid]);
 
   const confirmWithOriginal = async (password: string) => {
     setbackgroundColor(" bg-white");
-    setIsValid(false);
-    const validationFound = validations.find(
+    await setIsValid(false);
+    const validationFound = await validations.validationsList.find(
       (validation) => validation.id === "password"
     );
     if (validationFound && validationFound.value.length === password.length) {
-      if (validationFound.value === password) {
-        setIsValid(true);
+      if (await validationFound.value === password) {
+        await setIsValid(true);
       } else {
         setbackgroundColor(" bg-red-700");
       }
@@ -56,20 +58,12 @@ const LoginConfirmPassword = (props: { isVisible: boolean }) => {
 
   const handleChange = async (e: any) => {
     await setConfirmPassword(e.target.value);
-    await confirmWithOriginal(confirmPassword);
+    await confirmWithOriginal(e.target.value);
   };
 
   const handleBlur = async (e: any) => {
     await setConfirmPassword(e.target.value);
-    await confirmWithOriginal(confirmPassword);
-    await dispatch(
-      updateValidation({
-        id: "confirmpassword",
-        value: confirmPassword,
-        isValid: isValid,
-        isVisible: props.isVisible,
-      })
-    );
+    await confirmWithOriginal(e.target.value);
   };
 
   return (
@@ -80,7 +74,7 @@ const LoginConfirmPassword = (props: { isVisible: boolean }) => {
     >
       <div className="relative">
         <div className="absolute right-2 top-1/2 -translate-y-1/2 text-xl">
-          {isValid ? <RiThumbUpLine /> : <RiThumbDownLine />}
+          {isValid ? <RiCheckLine className="text-green-600" /> : <RiCloseLine className="text-red-600"/>}
         </div>
 
         <input

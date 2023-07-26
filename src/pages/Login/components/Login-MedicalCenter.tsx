@@ -1,5 +1,10 @@
-import { addValidation, updateValidation } from "@/redux";
-import { useEffect, useState, useRef} from "react";
+import {
+  addValidation,
+  howManyIsValid,
+  howManyIsVisible,
+  updateValidation,
+} from "@/redux";
+import { useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import {
   ValidationType,
@@ -9,6 +14,7 @@ import {
 import { valueTypeUtility } from "@/utilities";
 import { medicalCenterService } from "@/services";
 import { LoginMedicalCenterId, LoginMedicalCenterStateNCity } from ".";
+import { isValidMedicalCenterUtility } from "../utilities";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const LoginMedicalCenter = (props: { isVisible: boolean }) => {
@@ -42,6 +48,8 @@ const LoginMedicalCenter = (props: { isVisible: boolean }) => {
           isVisible: props.isVisible,
         })
       );
+      dispatch(howManyIsVisible(null));
+      dispatch(howManyIsValid(null));
     }
     medicalCenterService.setMedicalCenter(medicalCenter);
   }, [dispatch, props.isVisible, medicalCenter]);
@@ -59,6 +67,11 @@ const LoginMedicalCenter = (props: { isVisible: boolean }) => {
 
   const handleBlur = async (e: any) => {
     console.log(e.target.name, e.target.type);
+    setMedicalCenter({
+      ...medicalCenter,
+      [e.target.name]: valueTypeUtility(e.target.value, e.target.type),
+      ok: isValidMedicalCenterUtility(medicalCenter),
+    });
   };
 
   return (
@@ -67,11 +80,12 @@ const LoginMedicalCenter = (props: { isVisible: boolean }) => {
         <label htmlFor="" className="control-label">
           Centro Médico
         </label>
-        <div className="rounded-md flex flex-col gap-1">
-          <LoginMedicalCenterId isVisible={props.isVisible}/>
+        <div className="rounded-md flex flex-col gap-1 relative">
+          <LoginMedicalCenterId isVisible={props.isVisible} />
           {medicalCenter.found === 0 ? (
             <>
               <input
+                className="rounded-md pl-2 pr-10 w-full"
                 type="text"
                 placeholder="Nombre Centro Médico"
                 value={medicalCenter.name}
@@ -80,6 +94,7 @@ const LoginMedicalCenter = (props: { isVisible: boolean }) => {
                 onBlur={handleBlur}
               />
               <input
+                className="rounded-md pl-2 pr-10 w-full"
                 type="text"
                 placeholder="Dirección Centro Médico"
                 value={medicalCenter.address}
@@ -88,6 +103,7 @@ const LoginMedicalCenter = (props: { isVisible: boolean }) => {
                 onBlur={handleBlur}
               />
               <input
+                className="rounded-md pl-2 pr-10 w-full"
                 type="number"
                 placeholder="Teléfono Centro Médico"
                 value={medicalCenter.phone}
@@ -96,16 +112,16 @@ const LoginMedicalCenter = (props: { isVisible: boolean }) => {
                 onBlur={handleBlur}
               />
               <div className="flex flex-col-2 gap-1">
-                <LoginMedicalCenterStateNCity isVisible={props.isVisible}/>
+                <LoginMedicalCenterStateNCity isVisible={props.isVisible} />
               </div>
             </>
           ) : (
             <>
-              <input type="text" value={medicalCenter.name} readOnly />
-              <input type="text" value={medicalCenter.address} readOnly />
-              <input type="number" value={medicalCenter.phone} readOnly />
+              <input type="text" value={medicalCenter.name} readOnly onBlur={handleBlur}/>
+              <input type="text" value={medicalCenter.address} readOnly onBlur={handleBlur}/>
+              <input type="number" value={medicalCenter.phone} readOnly onBlur={handleBlur}/>
               <div className="flex flex-col-2 gap-1">
-                <LoginMedicalCenterStateNCity isVisible={props.isVisible}/>
+                <LoginMedicalCenterStateNCity isVisible={props.isVisible} />
               </div>
             </>
           )}

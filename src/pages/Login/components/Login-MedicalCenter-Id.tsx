@@ -9,6 +9,8 @@ import {
   createAlert,
   getMainCity,
   getMainEstado,
+  howManyIsValid,
+  howManyIsVisible,
   updateValidation,
 } from "@/redux";
 import { anyFetch, medicalCenterService } from "@/services";
@@ -19,6 +21,8 @@ import {
   methodType,
   valueTypeUtility,
 } from "@/utilities";
+import { RiCheckLine, RiCloseLine } from "react-icons/ri";
+import { isValidMedicalCenterUtility } from "../utilities";
 
 function LoginMedicalCenterId(props: { isVisible: boolean }) {
   const [medicalCenter, setMedicalCenter] = useState(MedicalCenterInitial);
@@ -39,6 +43,8 @@ function LoginMedicalCenterId(props: { isVisible: boolean }) {
         isVisible: props.isVisible,
       })
     );
+    dispatch(howManyIsVisible(null));
+    dispatch(howManyIsValid(null));
     medicalCenterService.setMedicalCenter(medicalCenter);
   }, [dispatch, props.isVisible, medicalCenter]);
 
@@ -49,7 +55,7 @@ function LoginMedicalCenterId(props: { isVisible: boolean }) {
         if (!data || error) {
           dispatch(createAlert(alertMessageUtility({})));
         } else {
-          if ((data) && data.ok) {
+          if (data && data.ok) {
             const adapted: any = createMedicalCenterAdapter(data);
             adapted["id"] = id;
             if (adapted.cityId > 0 && adapted.stateId > 0) {
@@ -58,6 +64,7 @@ function LoginMedicalCenterId(props: { isVisible: boolean }) {
               dispatch(getMainCity(adapted.cityId));
               adapted["cityName"] = citiesList.cityName;
             }
+            adapted["ok"] =isValidMedicalCenterUtility(medicalCenter);
             setMedicalCenter({ ...adapted });
             console.log("getMedicalCenter.adapted:", medicalCenter);
           }
@@ -70,13 +77,12 @@ function LoginMedicalCenterId(props: { isVisible: boolean }) {
     medicalCenterService.getMedicalCenter().subscribe((data) => {
       setMedicalCenter(data as MedicalCenterableInterface);
     });
-    const isOkMedicalCenter = String(e.target.value).length >= 6;
     setMedicalCenter({
       ...medicalCenter,
       [e.target.name]: valueTypeUtility(e.target.value, e.target.type),
-      ok: isOkMedicalCenter,
+      ok: isValidMedicalCenterUtility(medicalCenter),
     });
-    if (isOkMedicalCenter)
+    if (String(e.target.value).length>=6)
       await refreshMedicalCenters(
         valueTypeUtility(e.target.value, e.target.type)
       );
@@ -95,20 +101,31 @@ function LoginMedicalCenterId(props: { isVisible: boolean }) {
       setMedicalCenter({
         ...medicalCenter,
         found: 0,
+        ok: false,
       });
   };
 
   return (
-    <input
-      type="number"
-      placeholder="Nit Centro Médico"
-      value={medicalCenter.id}
-      required={props.isVisible}
-      id="medicalCenter"
-      name={"id"}
-      onChange={handleChange}
-      onBlur={handleBlur}
-    />
+    <div className="relative">
+      <div className="absolute right-2 top-1/2 -translate-y-1/2 text-xl">
+        {medicalCenter.ok ? (
+          <RiCheckLine className="text-green-600" />
+        ) : (
+          <RiCloseLine className="text-red-600" />
+        )}
+      </div>
+      <input
+        className="rounded-md pl-2 pr-10 w-full"
+        type="number"
+        placeholder="Nit Centro Médico"
+        value={medicalCenter.id}
+        required={props.isVisible}
+        id="medicalCenter"
+        name={"id"}
+        onChange={handleChange}
+        onBlur={handleBlur}
+      />
+    </div>
   );
 }
 

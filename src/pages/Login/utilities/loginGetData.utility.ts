@@ -4,16 +4,16 @@ export interface LoginSignupInterface {
   signup: boolean;
 }
 
-export const getEmail=(validations: any)=>{
-  const emailFound = validations.find(
+export const getDataEmailUtility=async (validationsList: any)=>{
+  const emailFound = validationsList.find(
     (validation: any) => validation.id === "email"
   );
-  if (emailFound) return emailFound.value;
+  if ( emailFound) return emailFound.value;
 }
 
-export const getPassword=(validations: any)=>{
-  const passwordFound = validations.find(
+export const getDataPasswordUtility=async(validationsList: any)=>{
+  const passwordFound =  validationsList.find(
     (validation: any) => validation.id === "password"
   );
-  if (passwordFound) return passwordFound.value;
+  if ( passwordFound) return passwordFound.value;
 }

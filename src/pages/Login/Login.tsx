@@ -12,10 +12,9 @@ import {
   LoginUserType,
 } from "./components";
 
-import { AppStore, createAlert } from "@/redux";
+import { AppStore, createAlert, howManyIsValid, howManyIsVisible } from "@/redux";
 import { alertMessageUtility } from "@/utilities";
-import { isValidEmail, validateAllFields, verifyData } from "./utilities";
-import { doLogin } from "./utilities/loginDoLogin";
+import { isValidEmailUtility, loginValidateAllFieldsUtility, messageVerifyDataUtility, doLoginUtility} from "./utilities";
 
 function Login() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -27,8 +26,9 @@ function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("Login.Once");
-  }, []);
+    dispatch(howManyIsVisible(null));
+    dispatch(howManyIsValid(null));
+  }, [dispatch, isSignUp, validations]);
 
   const doSignUp = async () => {
     if (isSignUp) {
@@ -39,18 +39,21 @@ function Login() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault(); // Avoid page refreshing.
-    const areValid = await validateAllFields(validations);
+    await loginValidateAllFieldsUtility(dispatch);
+    const areValid = (await validations.percentIsValid) === 100;
+
     console.log("areValid&mainButton:", areValid, mainButtonClick);
     setMainButtonClick(false);
     if (await (areValid === true && mainButtonClick === true)) {
-      await isValidEmail(dispatch, validations, isSignUp).then(
+      await isValidEmailUtility(dispatch, validations.validationsList, isSignUp).then(
         ({ signup, login }) => {
           if (signup) doSignUp();
-          if (login) doLogin(isSignUp, dispatch, validations, navigate);
+          if (login)
+            doLoginUtility(isSignUp, dispatch, validations.validationsList, navigate);
         }
       );
     } else if (!areValid && mainButtonClick)
-      dispatch(createAlert(alertMessageUtility(verifyData)));
+      dispatch(createAlert(alertMessageUtility(messageVerifyDataUtility)));
   };
 
   const changeSignUp = () => {
@@ -71,6 +74,14 @@ function Login() {
           <h4 className="mb-5 text-black text-2xl font-bold w-full">
             {isSignUp ? "Registro" : "Inicio Sesión"}
           </h4>
+          <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+            <div
+              className={`h-2.5 rounded-full ${
+                validations.percentIsValid < 70 ? "bg-red-600" : "bg-green-600"
+              }`}
+              style={{ width: `${validations.percentIsValid}%` }}
+            ></div>
+          </div>
           <LoginEmail isVisible={true} />
           <LoginMedicalCenter isVisible={isSignUp} />
           <div className="flex flex-col gap-2 bg-slate-100 p-2 rounded-md mb-3 form-group required ">
